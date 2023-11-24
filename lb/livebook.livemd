@@ -1,4 +1,4 @@
-# Check Point
+# Check Point - Playground
 
 ```elixir
 Mix.install(
@@ -12,44 +12,8 @@ Mix.install(
 
 ## Section
 
-Add Dynamic SuperVisor
-
 ```elixir
-defmodule DynSup do
-  # Automatically defines child_spec/1
-  use DynamicSupervisor
-
-  def start_link(init_arg) do
-    IO.inspect(init_arg, label: __MODULE__)
-    DynamicSupervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
-  end
-
-  @impl true
-  def init(_init_arg) do
-    DynamicSupervisor.init(strategy: :one_for_one)
-  end
-end
-
-# This would normally be started with the Application children
-
-children = [
-  {DynamicSupervisor, name: DynSup, strategy: :one_for_one},
-  {Registry, keys: :unique, name: Registry.WorkerReg}
-]
-
-{:ok, spid} = Supervisor.start_link(children, strategy: :one_for_all, name: SuperSup)
-```
-
-```elixir
-schils = Supervisor.which_children(SuperSup)
-```
-
-```elixir
-:sys.get_status(spid)
-```
-
-```elixir
-chils = Supervisor.which_children(DynSup)
+chils = Supervisor.which_children(CheckPoint.DynSup)
 ```
 
 ```elixir
@@ -57,58 +21,27 @@ for {_, pid, _, _} <- chils, do: :sys.get_state(pid)
 ```
 
 ```elixir
-for {_, pid, _, _} <- chils, do: Worker.inc(pid)
-```
-
-```elixir
-dpid = Process.whereis(DynSup)
+dpid = Process.whereis(CheckPoint.DynSup)
 :sys.get_status(dpid)
 ```
 
 ```elixir
-rpid = Process.whereis(Registry.WorkerReg)
+rpid = Process.whereis(CheckPoint.WorkerReg)
 :sys.get_state(rpid)
-```
-
-```elixir
-defmodule Worker do
-  use GenServer, restart: :transient
-
-  def start_link(initial) do
-    IO.inspect(initial, label: __MODULE__)
-    name = {:via, Registry, {Registry.WorkerReg, initial[:name]}}
-    GenServer.start_link(__MODULE__, initial, name: name)
-  end
-
-  def inc(pid) do
-    GenServer.call(pid, :inc)
-  end
-
-  @impl true
-  def init(initial) do
-    IO.inspect(initial, label: "INIT")
-    {:ok, initial}
-  end
-
-  @impl true
-  def handle_call(:inc, _, count) do
-    {:reply, count, count + 1}
-  end
-end
 ```
 
 ```elixir
 wlis =
   for num <- 0..9 do
     DynamicSupervisor.start_child(
-      DynSup,
-      {Worker, val: 0, delay: 5, args: :ip, name: "worker#{num}"}
+      CheckPoint.DynSup,
+      {CheckPoint.Worker, val: 0, delay: 5, args: :ip, name: "worker#{num}"}
     )
   end
 ```
 
 ```elixir
-[{wk, _} | _] = Registry.lookup(Registry.WorkerReg, "worker0")
+[{wk, _} | _] = Registry.lookup(CheckPoint.WorkerReg, "worker0")
 ```
 
 ```elixir
@@ -120,5 +53,5 @@ GenServer.stop(wk, :error)
 ```
 
 ```elixir
-Supervisor.stop(DynSup)
+Supervisor.stop(CheckPoint.DynSup)
 ```

@@ -15,9 +15,12 @@ defmodule CheckPoint.Application do
       # Start Finch
       {Finch, name: CheckPoint.Finch},
       # Start the Endpoint (http/https)
-      CheckPointWeb.Endpoint
+      CheckPointWeb.Endpoint,
       # Start a worker by calling: CheckPoint.Worker.start_link(arg)
       # {CheckPoint.Worker, arg}
+      {CheckPoint.DynSup, strategy: :one_for_one},
+      {Registry, keys: :unique, name: CheckPoint.WorkerReg}
+
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
