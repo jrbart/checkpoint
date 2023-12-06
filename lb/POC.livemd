@@ -115,6 +115,18 @@ wlis =
 :sys.get_state(wk)
 ```
 
+<!-- livebook:{"attrs":{},"chunks":null,"kind":"Elixir.Kino.RemoteExecutionCell","livebook_object":"smart_cell"} -->
+
+```elixir
+
+```
+
+<!-- livebook:{"attrs":{},"chunks":null,"kind":"Elixir.KinoSlack.MessageCell","livebook_object":"smart_cell"} -->
+
+```elixir
+
+```
+
 ```elixir
 GenServer.stop(wk, :error)
 ```

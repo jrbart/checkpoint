@@ -19,7 +19,8 @@ defmodule CheckPoint.Application do
       # Start a worker by calling: CheckPoint.Worker.start_link(arg)
       # {CheckPoint.Worker, arg}
       {CheckPoint.DynSup, strategy: :one_for_one},
-      {Registry, keys: :unique, name: CheckPoint.WorkerReg}
+      {Registry, keys: :unique, name: CheckPoint.WorkerReg},
+      {Registry, keys: :unique, name: CheckPoint.EscalateReg}
 
     ]
 

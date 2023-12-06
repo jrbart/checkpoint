@@ -10,7 +10,26 @@ Mix.install(
 )
 ```
 
-## Section
+## Escalate Section
+
+```elixir
+res = Task.start(CheckPoint.Escalate, :run, ["test"])
+```
+
+```elixir
+{_, pid} = res
+:sys.get_status(pid)
+```
+
+```elixir
+CheckPoint.Escalate.alert(:err, "test", 0)
+```
+
+```elixir
+Registry.count(CheckPoint.EscalateReg)
+```
+
+## Worker Section
 
 ```elixir
 chils = Supervisor.which_children(CheckPoint.DynSup)

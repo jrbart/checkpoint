@@ -6,7 +6,7 @@ defmodule CheckPoint.Worker do
   then it will log the fact that it ran and its results and sleep for a given duration.
   If it returns :error it will call the Alert moddule which will handle the escalation.
   """
-    # API
+  # API
   @doc """
   Create a checker (GenServer) to repeat a check function.
 
@@ -27,7 +27,8 @@ defmodule CheckPoint.Worker do
   # initializing the rest of the checks.
   @impl true
   def init(initial) do
-    {:ok, initial, {:continue, :start}}
+    state = [{:level, 0} | initial]
+    {:ok, state, {:continue, :start}}
   end
 
   # continue with any setup that needs to be done on init
@@ -47,33 +48,42 @@ defmodule CheckPoint.Worker do
     {:reply, reply, state}
   end
 
+  @impl true
+  def handle_cast(_request, state) do
+    # start the loop
+    Process.send(self(), :looping, [])
+    {:noreply, state}
+  end
+
+  # this is the main loop
   # the main loop will run the check funtion that was passed
   # in and record the result.  Then if the result was not :ok
   # it should notify the alert handler.  If everything was ok
   # then it should send_after to wake up later
   @impl true
-  def handle_cast(_request, state) do
-    _name = state[:name]
+  def handle_info(:looping, state) do
+    name = state[:name]
     check_fn = state[:fn]
     args = state[:args]
     opts = state[:opts]
-    check_fn.(args)
-    # send_after takes a delay that is minutes * seconds * milliseconds
-    Process.send_after(self(), :looping, opts[:delay])
-    {:noreply, state}
+    level = state[:level]
+
+    results =
+      check_fn.(args)
+      |> CheckPoint.Record.log(name)
+      |> CheckPoint.Escalate.alert(name,level)
+
+    # If results is not positive then change timing and start counting
+    {time, level} =
+      case results do
+        :ok -> {opts[:delay], 0}
+        :up -> {opts[:delay], 0}
+        _ -> {div(opts[:delay], 10), level + 1}
+      end
+
+
+    Process.send_after(self(), :looping, time)
+    {:noreply, [{:level, level} | state]}
   end
 
-  # this is the main loop
-  # TODO handle results
-  @impl true
-  def handle_info(:looping, state) do
-    _name = state[:name]
-    check_fn = state[:fn]
-    args = state[:args]
-    opts = state[:opts]
-    check_fn.(args)
-    # send_after takes a delay that is minutes * seconds * milliseconds
-    Process.send_after(self(), :looping, opts[:delay])
-    {:noreply, state}
-  end
 end
