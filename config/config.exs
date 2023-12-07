@@ -7,6 +7,15 @@
 # General application configuration
 import Config
 
+config :check_point,
+      ecto_repos: [CheckPoint.Repo]
+
+config :check_point, CheckPoint.Repo,
+  database: "check_point_repo",
+  username: "randy",
+  password: "",
+  hostname: "localhost"
+
 # Configures the endpoint
 config :check_point, CheckPointWeb.Endpoint,
   url: [host: "localhost"],

@@ -20,8 +20,8 @@ defmodule CheckPoint.Application do
       # {CheckPoint.Worker, arg}
       {CheckPoint.DynSup, strategy: :one_for_one},
       {Registry, keys: :unique, name: CheckPoint.WorkerReg},
-      {Registry, keys: :unique, name: CheckPoint.EscalateReg}
-
+      {Registry, keys: :unique, name: CheckPoint.EscalateReg},
+       CheckPoint.Repo,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
