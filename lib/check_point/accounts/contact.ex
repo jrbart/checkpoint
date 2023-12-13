@@ -3,12 +3,16 @@ defmodule CheckPoint.Accounts.Contact do
 
   import Ecto.Changeset
 
+  alias CheckPoint.Accounts
+
   schema "contacts" do
       field :name, :string
+      field :description, :string
       field :title, :string
       field :type, :string
-      field :details, :string
-      belongs_to :account, CheckPoint.Accounts.Account
+      field :detail, :string
+      many_to_many :account, Accounts.Account, join_through: Accounts.AccountContact
+      has_many :check, Accounts.Check
     
   end
   

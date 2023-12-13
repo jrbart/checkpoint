@@ -4,6 +4,7 @@ defmodule CheckPoint.Repo.Migrations.CreateAccounts do
   def change do
     create table(:accounts) do
       add :name, :text
+      add :account, :text
       add :alert_contact, references(:contacts)
     end
 

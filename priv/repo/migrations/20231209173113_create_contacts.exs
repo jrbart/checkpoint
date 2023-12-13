@@ -4,9 +4,10 @@ defmodule CheckPoint.Repo.Migrations.CreateContacts do
   def change do
     create table(:contacts) do
       add :name, :text
+      add :description, :text
       add :title, :text
       add :type, :text
-      add :details, :text
+      add :detail, :text
     end
 
   end

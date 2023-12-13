@@ -3,11 +3,39 @@
 ```elixir
 Mix.install(
   [
-    {:check_point, path: Path.join(__DIR__, ".."), env: :dev}
+    {:check_point, path: Path.join(__DIR__, ".."), env: :dev},
+    {:ecto_sql, "~> 3.0"}
   ],
   config_path: :check_point,
   lockfile: :check_point
 )
+```
+
+## Database
+
+```elixir
+alias CheckPoint.{Accounts, Repo}
+```
+
+```elixir
+contact = %Accounts.Contact{
+  name: "rbart",
+  description: "Randy Bartels",
+  title: "Lead Dev",
+  type: "email",
+  detail: "jrb@codingp.com"
+}
+
+account = %Accounts.Account{name: "test", account: "Test Account"}
+
+check = %Accounts.Check{description: "Test Check", args: ":ok", opts: "delay: 5000"}
+
+:ok
+```
+
+```elixir
+account |> Repo.insert() |> IO.inspect()
+:ok
 ```
 
 ## Escalate Section
