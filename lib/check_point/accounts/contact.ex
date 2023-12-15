@@ -11,12 +11,12 @@ defmodule CheckPoint.Accounts.Contact do
       field :title, :string
       field :type, :string
       field :detail, :string
-      many_to_many :account, Accounts.Account, join_through: Accounts.AccountContact
+      many_to_many :account, Accounts.Account, join_through: Accounts.AccountsContacts
       has_many :check, Accounts.Check
     
   end
   
-  @required_params [:type, :details]
+  @required_params [:type, :details, :account_id]
   @available_params [:name, :title | @required_params]
 
   def chamgeset(contact = %CheckPoint.Accounts.Contact{}, params) do

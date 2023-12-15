@@ -9,17 +9,17 @@ defmodule CheckPoint.Accounts.Account do
     field :name, :string
     field :account, :string
     belongs_to :alert_contact, Accounts.Contact
-    many_to_many :contact, Accounts.Contact, join_through: Accounts.AccountContact
+    many_to_many :contact, Accounts.Contact, join_through: Accounts.AccountsContacts
 
   end
 
-  @requied_params [:name]
-  @avalable_params @requied_params
+  @required_params [:name]
+  @avalable_params [:account, :alert_contact_id, :contact | @required_params]
 
   def changeset(account = %CheckPoint.Accounts.Account{}, params) do
     account
       |> cast(params, @avalable_params)
-      |> validate_required(@requied_params)
+      |> validate_required(@required_params)
     
   end
   
