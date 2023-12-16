@@ -6,7 +6,6 @@ defmodule CheckPoint.Repo.Migrations.CreateChecks do
       add :description, :text
       add :args, :text
       add :opts, :text
-      add :account_id, references(:accounts)
       add :contact_id, references(:contacts)
     end
 

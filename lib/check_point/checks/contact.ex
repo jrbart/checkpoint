@@ -1,9 +1,9 @@
-defmodule CheckPoint.Accounts.Contact do
+defmodule CheckPoint.Checks.Contact do
   use Ecto.Schema
 
   import Ecto.Changeset
 
-  alias CheckPoint.Accounts
+  alias CheckPoint.Checks
 
   schema "contacts" do
       field :name, :string
@@ -11,15 +11,14 @@ defmodule CheckPoint.Accounts.Contact do
       field :title, :string
       field :type, :string
       field :detail, :string
-      many_to_many :account, Accounts.Account, join_through: Accounts.AccountsContacts
-      has_many :check, Accounts.Check
+      has_many :check, Checks.Check
     
   end
   
-  @required_params [:type, :details, :account_id]
+  @required_params [:type, :details]
   @available_params [:name, :title | @required_params]
 
-  def chamgeset(contact = %CheckPoint.Accounts.Contact{}, params) do
+  def chamgeset(contact = %CheckPoint.Checks.Contact{}, params) do
     contact
       |> cast(params, @available_params)
       |> validate_required(@required_params)

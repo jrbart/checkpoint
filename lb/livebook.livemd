@@ -15,54 +15,32 @@ Mix.install(
 
 ```elixir
 require Ecto.Query
-alias CheckPoint.{Accounts, Repo}
+alias CheckPoint.{Checks, Repo}
 ```
 
 ```elixir
-contact = %Accounts.Contact{
+check = %Checks.Check{description: "Test Check", args: ":ok", opts: "delay: 5000"}
+
+:ok
+```
+
+```elixir
+Repo.delete_all(Checks.Contact)
+Repo.delete_all(Checks.Check)
+:ok
+```
+
+Create a contact
+
+```elixir
+contact = %{
   name: "rbart",
   description: "Randy Bartels",
-  title: "Lead Dev",
   type: "email",
   detail: "jrb@codingp.com"
 }
 
-account = %Accounts.Account{name: "test", account: "Test Account"}
-
-check = %Accounts.Check{description: "Test Check", args: ":ok", opts: "delay: 5000"}
-
-:ok
-```
-
-```elixir
-Repo.delete_all(Accounts.AccountsContacts)
-Repo.delete_all(Accounts.Account)
-Repo.delete_all(Accounts.Contact)
-Repo.delete_all(Accounts.Check)
-:ok
-```
-
-First create an account
-
-```elixir
-{:ok, my_account} = account |> Repo.insert()
-Repo.all(Accounts.Account)
-
-my_account.id
-```
-
-Now create a contact for the account and set it as the alert contact
-
-```elixir
-{:ok, my_contact} = contact |> Repo.insert()
-
-ac =
-  Accounts.AccountsContacts.changeset(
-    %Accounts.AccountsContacts{},
-    %{account_id: my_account.id, contact_id: my_contact.id}
-  )
-
-{:ok, res} = ac |> Repo.insert()
+{:ok, my_contact} = Repo.insert(contact)
 ```
 
 ## Escalate Section
