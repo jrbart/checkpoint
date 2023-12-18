@@ -1,54 +1,36 @@
 defmodule CheckPoint.Checks do
-  alias CheckPoint.Repo
   alias CheckPoint.Checks.{Contact,Check}
+  alias EctoShorts.Actions
 
-  def list_contacts do
-    Repo.all(Contact)
+  def list_contacts(params \\ %{}) do
+    Actions.all(Contact, params)
   end
 
-  def find_contact(%{id: id}) do
-    case Repo.get(Contact, id) do
-      nil -> {:error, "No Contact with that id"}
-      acc -> {:ok, acc}
-    end
+  def find_contact(params) do
+    Actions.find(Contact, params)
   end
 
   def update_contact(id, params) do
-    with {:ok, contact} <- find_contact(%{id: id}) do
-      contact
-      |> Contact.changeset(params)
-      |> Repo.update()
-    end
+    Actions.update(Contact, id, params)
   end
 
   def create_contact(params) do
-    %Contact{}
-    |> Contact.changeset(params)
-    |> Repo.insert()
+    Actions.create(Contact, params)  
   end
 
-  def list_checks do
-    Repo.all(Check)
+  def list_checks(params \\ %{}) do
+    Actions.all(Check, params)
   end
 
-  def find_check(%{id: id}) do
-    case Repo.get(Check, id) do
-      nil -> {:error, "No check with that id"}
-      acc -> {:ok, acc}
-    end
+  def find_check(params) do
+    Actions.find(Check, params)
   end
 
   def update_check(id, params) do
-    with {:ok, check} <- find_check(%{id: id}) do
-      check
-      |> Check.changeset(params)
-      |> Repo.update()
-    end
+    Actions.update(Check, id, params)
   end
 
   def create_check(params) do
-    %Check{}
-    |> Check.changeset(params)
-    |> Repo.insert()
+    Actions.create(Check, params)
   end
 end

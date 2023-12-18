@@ -3,7 +3,7 @@ defmodule CheckPoint.Checks.Contact do
 
   import Ecto.Changeset
 
-  alias CheckPoint.Checks
+  alias CheckPoint.{Checks,Repo}
 
   schema "contacts" do
       field :name, :string
@@ -17,10 +17,14 @@ defmodule CheckPoint.Checks.Contact do
   @required_params [:type, :detail]
   @available_params [:name | @required_params]
 
-  def changeset(contact = %CheckPoint.Checks.Contact{}, params) do
+  def changeset(contact = %Checks.Contact{}, params) do
     contact
+      |> Repo.preload(:check)
       |> cast(params, @available_params)
       |> validate_required(@required_params)
+      |> cast_assoc(:check)
+
   end
 
+  def create_changeset(params \\ %{}), do: changeset(%__MODULE__{}, params)
 end

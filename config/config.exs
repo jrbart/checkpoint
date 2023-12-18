@@ -8,13 +8,17 @@
 import Config
 
 config :check_point,
-      ecto_repos: [CheckPoint.Repo]
+  ecto_repos: [CheckPoint.Repo]
 
 config :check_point, CheckPoint.Repo,
   database: "check_point_repo",
   username: "randy",
   password: "",
   hostname: "localhost"
+
+config :ecto_shorts,
+  repo: CheckPoint.Repo,
+  error_module: Ecto_shorts.Actions.Error
 
 # Configures the endpoint
 config :check_point, CheckPointWeb.Endpoint,
