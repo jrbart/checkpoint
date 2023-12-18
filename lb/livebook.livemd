@@ -19,14 +19,8 @@ alias CheckPoint.{Checks, Repo}
 ```
 
 ```elixir
-check = %Checks.Check{description: "Test Check", args: ":ok", opts: "delay: 5000"}
-
-:ok
-```
-
-```elixir
-Repo.delete_all(Checks.Contact)
 Repo.delete_all(Checks.Check)
+Repo.delete_all(Checks.Contact)
 :ok
 ```
 
@@ -40,7 +34,32 @@ contact = %{
   detail: "jrb@codingp.com"
 }
 
-{:ok, my_contact} = Repo.insert(contact)
+{res, my_contact} = Checks.create_contact(contact)
+res
+```
+
+Add a check
+
+```elixir
+check = %{
+  description: "test",
+  args: "test",
+  opts: ":delay 1000",
+  contact_id: my_contact.id
+}
+
+{res, my_check} = Checks.create_check(check)
+res
+```
+
+Now play around with the database
+
+```elixir
+Checks.list_contacts() |> Repo.preload(:check)
+```
+
+```elixir
+Checks.list_checks() |> Repo.preload(:contact)
 ```
 
 ## Escalate Section

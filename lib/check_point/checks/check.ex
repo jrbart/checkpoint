@@ -9,11 +9,10 @@ defmodule CheckPoint.Checks.Check do
     field :description, :string
     field :args, :string
     field :opts, :string
-    belongs_to :account, CheckPoint.Checks.Check
     belongs_to :contact, Checks.Contact
   end
 
-  @required_params [:description, :args, :opts, :account_id]
+  @required_params [:description, :args, :opts, :contact_id]
   @available_params [:contact_id | @required_params]
 
   def changeset(check = %CheckPoint.Checks.Check{}, params) do
