@@ -15,7 +15,7 @@ defmodule CheckPoint.Checks.Contact do
   end
   
   @required_params [:type, :detail]
-  @available_params [:name | @required_params]
+  @available_params [:name, :description | @required_params]
 
   def changeset(contact = %Checks.Contact{}, params) do
     contact

@@ -20,6 +20,7 @@ defmodule CheckPoint.Checks.Check do
     |> Repo.preload(:contact)
     |> cast(params, @available_params)
     |> validate_required(@required_params)
+    |> foreign_key_constraint(:contact_id)
     |> cast_assoc(:contact)
   end
   

@@ -19,8 +19,8 @@ alias CheckPoint.{Checks, Repo}
 ```
 
 ```elixir
-Repo.delete_all(Checks.Check)
-Repo.delete_all(Checks.Contact)
+# Repo.delete_all(Checks.Check)
+# Repo.delete_all(Checks.Contact)
 :ok
 ```
 
@@ -60,6 +60,15 @@ Checks.list_contacts() |> Repo.preload(:check)
 
 ```elixir
 Checks.list_checks() |> Repo.preload(:contact)
+```
+
+```elixir
+Checks.create_check(%{
+  description: "Google",
+  args: "google.com",
+  opts: "",
+  contact: 3
+})
 ```
 
 ## Escalate Section
