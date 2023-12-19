@@ -22,6 +22,7 @@ defmodule CheckPoint.Checks.Contact do
       |> Repo.preload(:check)
       |> cast(params, @available_params)
       |> validate_required(@required_params)
+      |> unique_constraint(:name)
       |> cast_assoc(:check)
 
   end

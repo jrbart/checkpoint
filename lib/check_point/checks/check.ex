@@ -12,8 +12,8 @@ defmodule CheckPoint.Checks.Check do
     belongs_to :contact, Checks.Contact
   end
 
-  @required_params [:description, :args, :opts]
-  @available_params @required_params
+  @required_params [:description]
+  @available_params [ :args, :opts, :contact_id | @required_params]
 
   def changeset(check = %Checks.Check{}, params) do
     check

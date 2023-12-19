@@ -45,7 +45,7 @@ check = %{
   description: "test",
   args: "test",
   opts: ":delay 1000",
-  contact: contact
+  contact: %{contact | name: "bartjr"}
 }
 
 {res, my_check} = Checks.create_check(check)

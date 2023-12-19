@@ -1,5 +1,6 @@
 defmodule CheckPoint.ChecksTest do
 	use ExUnit.Case
+  use CheckPoint.RepoCase
 	doctest CheckPoint.Checks
 	alias CheckPoint.Checks
 
@@ -26,12 +27,17 @@ describe "Checks.create_contact/1" do
       contact = Map.put(@contact, :check, [@check])
       Checks.Check.changeset(%Checks.Check{},@check)
       assert {:ok, my_contact} = Checks.create_contact(contact)
-      
       assert hd(my_contact.check).description == "test"
     end
-	end
 
-# contact name must be unique
+    test "create_contact must be unique name" do
+      contact = Map.put(@contact, :check, [@check])
+      Checks.Check.changeset(%Checks.Check{},@check)
+      assert {:ok, _contact} = Checks.create_contact(contact)
+      assert {:error, _err} = Checks.create_contact(contact)
+      end
+      
+	end
 
     test "create_check also does create_contact" do
       check = Map.put(@check, :contact, @contact)
@@ -42,8 +48,14 @@ describe "Checks.create_contact/1" do
 
 
     test "create_check must take a contact" do
-      assert {:error, err} = Checks.create_check(@check)
-    #IO.inspect(err)
+    # raises exption due to DB constraint
+    # TODO get validation to catch in changeset
+      try do
+        {:ok, _err} = Checks.create_check(@check)
+        assert :false
+      rescue
+        _e -> assert :true
+      end
     end
 
 

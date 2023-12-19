@@ -9,5 +9,6 @@ defmodule CheckPoint.Repo.Migrations.CreateContacts do
       add :detail, :text
     end
 
+    create unique_index(:contacts, [:name])
   end
 end
