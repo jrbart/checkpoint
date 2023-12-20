@@ -1,18 +1,32 @@
 # CheckPoint
 
-To start your Phoenix server:
+A monitoring service to track the status of services that you depend on!
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+Contacts are checks are added like this:
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+'''
+alias CheckPoint.Checks
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+Checks.create_contact(%{
+    name: "bruce",
+    description: "Bruce Boss",
+    type: "email",
+    detail: "bb@email.com"
+})
 
-## Learn more
+Checks.create_check(%{
+        description: "localhost",
+        args: "localhost",
+        opts: "",
+        contact_id: 1
+})
+'''
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+The application will run the test repeatedly (default every 5 minutes) and
+notify the contact if the test fails 3 times in a row.  On the first failure
+it will decrease the interval to 1/10th of the initial value.
+
+#Take-aways
+
+This project demonstrates the use of GenServers, Tasks, and GraphQL along with Ecto
+
