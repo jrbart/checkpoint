@@ -55,7 +55,7 @@ res
 Now play around with the database
 
 ```elixir
-Checks.list_contacts() |> Repo.preload(:check)
+Checks.list_contacts() |> Repo.preload(:checks)
 ```
 
 ```elixir

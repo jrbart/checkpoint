@@ -10,7 +10,7 @@ defmodule CheckPoint.Checks.Contact do
       field :description, :string
       field :type, :string
       field :detail, :string
-      has_many :check, Checks.Check
+      has_many :checks, Checks.Check
     
   end
   
@@ -19,11 +19,11 @@ defmodule CheckPoint.Checks.Contact do
 
   def changeset(contact = %Checks.Contact{}, params) do
     contact
-      |> Repo.preload(:check)
+      |> Repo.preload(:checks)
       |> cast(params, @available_params)
       |> validate_required(@required_params)
       |> unique_constraint(:name)
-      |> cast_assoc(:check)
+      |> cast_assoc(:checks)
 
   end
 

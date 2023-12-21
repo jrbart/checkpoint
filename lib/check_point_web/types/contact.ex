@@ -8,6 +8,7 @@ defmodule CheckPointWeb.Types.Contact do
     field :description, :string
     field :type, :string
     field :detail, :string
+    field :checks, list_of(:check)
 
   end
   

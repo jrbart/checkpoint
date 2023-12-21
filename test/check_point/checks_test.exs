@@ -24,14 +24,14 @@ describe "Checks.create_contact/1" do
 		end
   
     test "create_contact can also create_check" do
-      contact = Map.put(@contact, :check, [@check])
+      contact = Map.put(@contact, :checks, [@check])
       Checks.Check.changeset(%Checks.Check{},@check)
       assert {:ok, my_contact} = Checks.create_contact(contact)
-      assert hd(my_contact.check).description == "test"
+      assert hd(my_contact.checks).description == "test"
     end
 
     test "create_contact must be unique name" do
-      contact = Map.put(@contact, :check, [@check])
+      contact = Map.put(@contact, :checks, [@check])
       Checks.Check.changeset(%Checks.Check{},@check)
       assert {:ok, _contact} = Checks.create_contact(contact)
       assert {:error, _err} = Checks.create_contact(contact)

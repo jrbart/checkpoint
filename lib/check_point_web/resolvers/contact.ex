@@ -3,6 +3,6 @@ defmodule CheckPointWeb.Resolvers.Contact do
   alias CheckPoint.Checks
 
   def find(%{name: name}, _) do
-    Checks.find_contact(%{name: name})
+    Checks.find_contact(%{name: name, preload: :checks})
   end
 end

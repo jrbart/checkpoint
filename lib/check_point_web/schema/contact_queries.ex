@@ -1,13 +1,9 @@
 defmodule CheckPointWeb.Schema.ContactQuery do
   use Absinthe.Schema.Notation
-  alias CheckPointWeb.Resolvers
+  import_types CheckPointWeb.Types.Contact
+  import_types CheckPointWeb.Types.Check
 
-  object :contact do
-    field :name, :string
-    field :description, :string
-    field :type, :string
-    field :detail, :string
-  end
+  alias CheckPointWeb.Resolvers
 
   @desc "Get contacts"
   object :contact_queries do
