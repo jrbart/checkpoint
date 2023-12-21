@@ -43,7 +43,10 @@ defmodule CheckPoint.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:ecto_shorts, "~> 2.3"}
+      {:ecto_shorts, "~> 2.3"},
+
+      {:absinthe, "~> 1.7"},
+      {:absinthe_plug, "~> 1.5"},
     ]
   end
 

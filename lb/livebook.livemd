@@ -71,6 +71,10 @@ Checks.create_check(%{
 })
 ```
 
+```elixir
+Checks.find_contact(%{name: "bruce"})
+```
+
 ## Escalate Section
 
 ```elixir
