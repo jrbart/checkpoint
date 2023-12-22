@@ -66,13 +66,12 @@ Checks.list_checks() |> Repo.preload(:contact)
 Checks.create_check(%{
   description: "Google",
   args: "google.com",
-  opts: "",
-  contact: 3
+  opts: ""
 })
 ```
 
 ```elixir
-Checks.find_contact(%{name: "bruce"})
+Checks.find_check(%{id: 1})
 ```
 
 ## Escalate Section

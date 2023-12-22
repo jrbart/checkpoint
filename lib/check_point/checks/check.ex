@@ -13,7 +13,7 @@ defmodule CheckPoint.Checks.Check do
   end
 
   @required_params [:description]
-  @available_params [ :args, :opts, :contact_id | @required_params]
+  @available_params [ :id, :args, :opts, :contact_id | @required_params]
 
   def changeset(check = %Checks.Check{}, params) do
     check

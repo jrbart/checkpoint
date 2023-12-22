@@ -18,7 +18,7 @@ config :check_point, CheckPoint.Repo,
 
 config :ecto_shorts,
   repo: CheckPoint.Repo,
-  error_module: Ecto_shorts.Actions.Error
+  error_module: EctoShorts.Actions.Error
 
 # Configures the endpoint
 config :check_point, CheckPointWeb.Endpoint,

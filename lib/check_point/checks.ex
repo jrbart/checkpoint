@@ -7,7 +7,11 @@ defmodule CheckPoint.Checks do
   end
 
   def find_contact(params) do
-    Actions.find(Contact, params)
+    case Actions.find(Contact, params) do
+      # For some reason Absinthe gets all discombobulated with %ErrorMessage
+      {:error, _message} -> {:error, "No such contact"}
+      res -> res
+    end
   end
 
   def update_contact(id, params) do
@@ -23,7 +27,11 @@ defmodule CheckPoint.Checks do
   end
 
   def find_check(params) do
-    Actions.find(Check, params)
+    case Actions.find(Check, params) do
+      # For some reason Absinthe gets all discombobulated with %ErrorMessage
+      {:error, _message} -> {:error, "No such check"}
+      res -> res
+    end
   end
 
   def update_check(id, params) do
