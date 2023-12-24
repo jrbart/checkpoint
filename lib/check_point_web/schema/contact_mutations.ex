@@ -14,5 +14,16 @@ defmodule CheckPointWeb.Schema.ContactMutation do
 
       resolve &Resolvers.Contact.create/2
     end
+
+    @desc "Change a contact"
+    field :update_contact, :contact do
+      arg :id, non_null(:id)
+      arg(:name, :string)
+      arg :description, :string
+      arg :type, :string
+      arg :detail, :string
+
+      resolve &Resolvers.Contact.update/2
+    end
   end
 end

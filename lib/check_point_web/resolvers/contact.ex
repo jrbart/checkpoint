@@ -9,4 +9,9 @@ defmodule CheckPointWeb.Resolvers.Contact do
   def create(params, _) do
     Checks.create_contact(params)
   end
+
+  def update(params, _) do
+    id = params.id
+    Checks.update_contact(id,params)
+  end
 end
