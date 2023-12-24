@@ -66,7 +66,8 @@ Checks.list_checks() |> Repo.preload(:contact)
 Checks.create_check(%{
   description: "Google",
   args: "google.com",
-  opts: ""
+  opts: "",
+  contact_id: 1
 })
 ```
 

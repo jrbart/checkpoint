@@ -1,4 +1,5 @@
 defmodule CheckPointWeb.Schema.UserQueryTest do
+	use ExUnit.Case
   alias Ecto.Adapter.Schema
   use CheckPoint.RepoCase, async: true
 

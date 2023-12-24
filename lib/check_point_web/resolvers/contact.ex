@@ -5,4 +5,8 @@ defmodule CheckPointWeb.Resolvers.Contact do
   def find(%{name: name}, _) do
     Checks.find_contact(%{name: name, preload: :checks})
   end
+
+  def create(params, _) do
+    Checks.create_contact(params)
+  end
 end
