@@ -22,6 +22,13 @@ defmodule CheckPoint.Checks do
     Actions.create(Contact, params)  
   end
 
+  def delete_contact(params) do
+    case Actions.delete(Contact,params) do
+    {:error, _message} -> {:error, "An error occured"}
+    res -> res
+    end
+  end
+
   def list_checks(params \\ %{}) do
     Actions.all(Check, params)
   end

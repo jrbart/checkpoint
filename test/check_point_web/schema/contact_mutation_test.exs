@@ -57,5 +57,29 @@ defmodule CheckPointWeb.Schema.ContactMutationTest do
       
     end
     
+    test "delete contact" do
+      {:ok, contact} =
+        Checks.create_contact(%{
+          name: "some_name",
+          description: "Randy Bartels",
+          type: "email",
+          detail: "jrb@codingp.com"
+        })
+
+      mutation = "name: \"#{contact.name}\""
+
+      mutation = "mutation { deleteContact( #{mutation} ) { id } }"
+
+      {:ok, %{data: %{"deleteContact" => %{"id" => cid}}}} =
+        Absinthe.run(
+          mutation,
+          Schema
+        )
+
+      cid = String.to_integer(cid)
+      {:error, _} = Checks.find_contact(%{id: cid})
+      # assert "change_name" == my_contact.nam
+      
+    end
   end
 end

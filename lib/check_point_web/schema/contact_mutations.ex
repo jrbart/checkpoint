@@ -25,5 +25,12 @@ defmodule CheckPointWeb.Schema.ContactMutation do
 
       resolve &Resolvers.Contact.update/2
     end
+
+    @desc "Delete a contact"
+    field :delete_contact, :contact do
+      arg :name, :string
+
+      resolve &Resolvers.Contact.delete/2
+    end
   end
 end

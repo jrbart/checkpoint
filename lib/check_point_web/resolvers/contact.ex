@@ -14,4 +14,9 @@ defmodule CheckPointWeb.Resolvers.Contact do
     id = params.id
     Checks.update_contact(id,params)
   end
+
+  def delete(%{name: name}, _) do
+    {:ok, contact} = Checks.find_contact(%{name: name})
+    Checks.delete_contact(contact.id)
+  end
 end

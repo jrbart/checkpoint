@@ -75,6 +75,10 @@ Checks.create_check(%{
 Checks.find_check(%{id: 1})
 ```
 
+```elixir
+Checks.
+```
+
 ## Escalate Section
 
 ```elixir
