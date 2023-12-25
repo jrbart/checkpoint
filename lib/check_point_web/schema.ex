@@ -6,7 +6,7 @@ defmodule CheckPointWeb.Schema do
   import_types CheckPointWeb.Schema.ContactMutation
   import_types CheckPointWeb.Schema.CheckQuery
   # import_types CheckPointWeb.Schema.CheckSubscription
-  # import_types CheckPointWeb.Schema.CheckMutation
+  import_types CheckPointWeb.Schema.CheckMutation
   import_types CheckPointWeb.Types.Check
   import_types CheckPointWeb.Types.Contact
   
@@ -17,6 +17,7 @@ defmodule CheckPointWeb.Schema do
 
   mutation do
     import_fields :contact_mutations
+    import_fields :check_mutations
   end
 
   # subscription do

@@ -13,23 +13,24 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +28 ~/dev/ex/midterm/check_point/lib/check_point_web/router.ex
-badd +10 ~/dev/ex/midterm/check_point/lib/check_point_web/schema.ex
-badd +8 ~/dev/ex/midterm/check_point/lib/check_point_web/schema/contact_queries.ex
-badd +8 ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/contact.ex
-badd +1 ~/dev/ex/midterm/check_point/lib/check_point_web/types/contact.ex
+badd +1 ~/dev/ex/midterm/check_point/lib/check_point_web/schema.ex
+badd +34 ~/dev/ex/midterm/check_point/test/check_point_web/schema/check_mutation_test.exs
+badd +13 ~/dev/ex/midterm/check_point/lib/check_point_web/schema/check_mutations.ex
+badd +14 ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/check.ex
+badd +1 ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/contact.ex
+badd +3 ~/dev/ex/midterm/check_point/lib/check_point_web/types/check.ex
+badd +5 ~/dev/ex/midterm/check_point/lib/check_point_web/types/contact.ex
+badd +21 ~/dev/ex/midterm/check_point/lib/check_point/checks.ex
+badd +27 ~/dev/ex/midterm/check_point/lib/check_point/checks/check.ex
 argglobal
 %argdel
-edit ~/dev/ex/midterm/check_point/lib/check_point_web/schema.ex
+edit ~/dev/ex/midterm/check_point/test/check_point_web/schema/check_mutation_test.exs
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
-wincmd _ | wincmd |
-vsplit
-2wincmd h
-wincmd w
+1wincmd h
 wincmd w
 let &splitbelow = s:save_splitbelow
 let &splitright = s:save_splitright
@@ -40,12 +41,12 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 30 + 110) / 221)
-exe 'vert 2resize ' . ((&columns * 95 + 110) / 221)
-exe 'vert 3resize ' . ((&columns * 94 + 110) / 221)
+exe 'vert 1resize ' . ((&columns * 30 + 120) / 241)
+exe 'vert 2resize ' . ((&columns * 210 + 120) / 241)
 argglobal
 enew
 file NvimTree_1
+balt ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/contact.ex
 setlocal fdm=manual
 setlocal fde=
 setlocal fmr={{{,}}}
@@ -56,7 +57,7 @@ setlocal fdn=20
 setlocal nofen
 wincmd w
 argglobal
-balt ~/dev/ex/midterm/check_point/lib/check_point_web/types/contact.ex
+balt ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/check.ex
 setlocal fdm=manual
 setlocal fde=
 setlocal fmr={{{,}}}
@@ -67,40 +68,16 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 10 - ((9 * winheight(0) + 24) / 48)
+let s:l = 34 - ((25 * winheight(0) + 25) / 51)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 10
-normal! 048|
-wincmd w
-argglobal
-if bufexists(fnamemodify("~/dev/ex/midterm/check_point/lib/check_point_web/schema/contact_queries.ex", ":p")) | buffer ~/dev/ex/midterm/check_point/lib/check_point_web/schema/contact_queries.ex | else | edit ~/dev/ex/midterm/check_point/lib/check_point_web/schema/contact_queries.ex | endif
-if &buftype ==# 'terminal'
-  silent file ~/dev/ex/midterm/check_point/lib/check_point_web/schema/contact_queries.ex
-endif
-balt ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/contact.ex
-setlocal fdm=manual
-setlocal fde=
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 11 - ((10 * winheight(0) + 24) / 48)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 11
-normal! 039|
+keepjumps 34
+normal! 0
 wincmd w
 2wincmd w
-exe 'vert 1resize ' . ((&columns * 30 + 110) / 221)
-exe 'vert 2resize ' . ((&columns * 95 + 110) / 221)
-exe 'vert 3resize ' . ((&columns * 94 + 110) / 221)
+exe 'vert 1resize ' . ((&columns * 30 + 120) / 241)
+exe 'vert 2resize ' . ((&columns * 210 + 120) / 241)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

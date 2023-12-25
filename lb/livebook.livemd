@@ -19,8 +19,8 @@ alias CheckPoint.{Checks, Repo}
 ```
 
 ```elixir
-# Repo.delete_all(Checks.Check)
-# Repo.delete_all(Checks.Contact)
+Repo.delete_all(Checks.Check)
+Repo.delete_all(Checks.Contact)
 :ok
 ```
 
@@ -35,7 +35,6 @@ contact = %{
 }
 
 {res, my_contact} = Checks.create_contact(contact)
-res
 ```
 
 Add a check
@@ -44,12 +43,10 @@ Add a check
 check = %{
   description: "test",
   args: "test",
-  opts: ":delay 1000",
-  contact: %{contact | name: "bartjr"}
+  opts: ":delay 1000"
 }
 
-{res, my_check} = Checks.create_check(check)
-res
+{res, my_check} = Checks.create_check(Map.put(check, :contact_id, my_contact.id))
 ```
 
 Now play around with the database
@@ -67,16 +64,16 @@ Checks.create_check(%{
   description: "Google",
   args: "google.com",
   opts: "",
-  contact_id: 1
+  contact_id: my_contact.id
 })
 ```
 
 ```elixir
-Checks.find_check(%{id: 1})
+Checks.find_check(%{contact: %{name: my_contact.name}})
 ```
 
 ```elixir
-Checks.
+Checks.create_check(Map.put(check, :contact, %{name: contact.name}))
 ```
 
 ## Escalate Section
