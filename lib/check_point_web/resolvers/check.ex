@@ -7,10 +7,13 @@ defmodule CheckPointWeb.Resolvers.Check do
   end
 
   def create(params, _) do
-{:ok, cid} = Checks.find_contact(%{name: params.contact})
-    params 
-      |> Map.delete(:contact)
-      |> Map.put(:contact_id, cid.id)
-      |> Checks.create_check
+    case Checks.find_contact(%{name: params.contact}) do
+    {:error, _} -> {:error, "cannot find contact"}   
+    {:ok, cid} ->
+      params 
+        |> Map.delete(:contact)
+        |> Map.put(:contact_id, cid.id)
+        |> Checks.create_check
+      end
   end
 end

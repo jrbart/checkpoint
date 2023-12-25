@@ -37,6 +37,24 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
       assert cid == my_check.id
     end
 
+    test "fails with bad contact name" do
+      mutation = """ 
+        description: "Test Check", 
+        args: "google.com", 
+        opts: "" 
+        contact: "bad_name"
+      """
+
+      mutation = "mutation { createCheck( #{mutation} ) { id } }"
+
+      {:ok, %{data: %{"createCheck" => nil}, errors: [res]}} =
+        Absinthe.run(
+          mutation,
+          Schema
+        )
+
+      assert res.message == "cannot find contact"
+    end
   #   test "update contact" do
   #     {:ok, contact} =
   #       Checks.create_contact(%{
