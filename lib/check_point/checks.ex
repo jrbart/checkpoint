@@ -41,11 +41,15 @@ defmodule CheckPoint.Checks do
     end
   end
 
-  def update_check(id, params) do
-    Actions.update(Check, id, params)
-  end
-
   def create_check(params) do
     Actions.create(Check, params)
+  end
+
+  def delete_check(%{id: id}) do
+    id = String.to_integer(id)
+    case Actions.delete(Check,id) do
+    {:error, _message} -> {:error, "An error occured"}
+    res -> res
+    end
   end
 end

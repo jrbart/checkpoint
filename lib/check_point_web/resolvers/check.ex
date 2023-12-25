@@ -16,4 +16,8 @@ defmodule CheckPointWeb.Resolvers.Check do
         |> Checks.create_check
       end
   end
+
+  def delete(params, _) do
+    Checks.delete_check(params)
+  end
 end

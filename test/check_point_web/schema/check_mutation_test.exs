@@ -55,51 +55,34 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
 
       assert res.message == "cannot find contact"
     end
-  #   test "update contact" do
-  #     {:ok, contact} =
-  #       Checks.create_contact(%{
-  #         name: "new_name",
-  #         description: "Randy Bartels",
-  #         type: "email",
-  #         detail: "jrb@codingp.com"
-  #       })
+    
+    test "delete check" do
+      {:ok, contact} =
+        Checks.create_contact(%{
+          name: "some_name",
+          description: "Randy Bartels",
+          type: "email",
+          detail: "jrb@codingp.com"
+        })
 
-  #     mutation = """ 
-  #       id: #{contact.id}
-  #       name: "change_name", 
-  #       detail: "bob@codingp.com" 
-  #     """
+      {:ok, check} =
+        Checks.create_check(%{
+          description: "Test check",
+          args: "google.com",
+          opts: "",
+          contact_id: contact.id
+        })
+      
+      mutation = "mutation { deleteCheck( id: #{check.id} ) { id } }"
 
-  #     mutation = "mutation { updateContact( #{mutation} ) { id } }"
+       {:ok, %{data: %{"deleteCheck" => %{"id" => cid}}}} =
+        Absinthe.run(
+          mutation,
+          Schema
+        )
 
-  #     {:ok, %{data: %{"updateContact" => %{"id" => cid}}}} =
-  #       Absinthe.run(
-  #         mutation,
-  #         Schema
-  #       )
-
-  #     cid = String.to_integer(cid)
-  #     {:ok, my_contact} = Checks.find_contact(%{id: cid})
-  #     assert "change_name" == my_contact.name
-  #     
-  #   end
-  #   
-  #   test "delete contact" do
-
-  #     mutation = "name: \"#{contact.name}\""
-
-  #     mutation = "mutation { deleteContact( #{mutation} ) { id } }"
-
-  #     {:ok, %{data: %{"deleteContact" => %{"id" => cid}}}} =
-  #       Absinthe.run(
-  #         mutation,
-  #         Schema
-  #       )
-
-  #     cid = String.to_integer(cid)
-  #     {:error, _} = Checks.find_contact(%{id: cid})
-  #     # assert "change_name" == my_contact.nam
-  #     
-  #   end
+      cid = String.to_integer(cid)
+      {:error, _} = Checks.find_contact(%{id: cid})
+    end
    end
 end

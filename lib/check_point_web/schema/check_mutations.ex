@@ -14,6 +14,13 @@ defmodule CheckPointWeb.Schema.CheckMutation do
 
       resolve &Resolvers.Check.create/2
     end
+
+    @desc "Delete a check"
+    field :delete_check, :check do
+      arg :id, non_null(:id)
+
+      resolve &Resolvers.Check.delete/2
+    end
   end
   
 end
