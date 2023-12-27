@@ -1,4 +1,4 @@
-defmodule CheckPointWeb.Schema.UserQueryTest do
+defmodule CheckPointWeb.Schema.ContactQueryTest do
 	use ExUnit.Case
   alias Ecto.Adapter.Schema
   use CheckPoint.RepoCase, async: true
@@ -44,6 +44,7 @@ defmodule CheckPointWeb.Schema.UserQueryTest do
 
       Checks.create_check(%{
         description: "test1",
+        action: "green",
         args: "test",
         opts: "",
         contact_id: contact.id
@@ -51,6 +52,7 @@ defmodule CheckPointWeb.Schema.UserQueryTest do
 
       Checks.create_check(%{
         description: "test2",
+        action: "green",
         args: "test",
         opts: "",
         contact_id: contact.id

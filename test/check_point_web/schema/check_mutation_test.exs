@@ -19,6 +19,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
       
       mutation = """ 
         description: "Test Check", 
+        action: "green",
         args: "google.com", 
         opts: "" 
         contact: \"#{contact.name}\"
@@ -40,6 +41,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
     test "fails with bad contact name" do
       mutation = """ 
         description: "Test Check", 
+        action: "green",
         args: "google.com", 
         opts: "" 
         contact: "bad_name"
@@ -68,6 +70,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
       {:ok, check} =
         Checks.create_check(%{
           description: "Test check",
+        action: "green",
           args: "google.com",
           opts: "",
           contact_id: contact.id

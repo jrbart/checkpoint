@@ -13,6 +13,7 @@ defmodule CheckPoint.ChecksTest do
 
   @check %{
     description: "test",
+    action: "green",
     args: "test",
     opts: "delay: 1000",
   }
