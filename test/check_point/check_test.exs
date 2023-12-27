@@ -3,21 +3,22 @@ defmodule CheckPoint.CheckTest do
 	doctest CheckPoint.Check
 	alias CheckPoint.Check
 
-describe "Check.ping/1" do
-		test "function exists" do
-		  assert Check.ping("127.0.0.1") in [:ok, :error]
-		end
-	end
-
-describe "Check.port/1" do
-		test "function exists" do
-		  assert Check.port("127.0.0.1",80) in [:ok, :error]
-		end
-	end
-
 describe "Check.http/1" do
 		test "function exists" do
-		  assert Check.http("127.0.0.1:80") in [:ok, :error]
+		  assert Check.http("http://www.google.com/") == :ok
 		end
   end
+
+describe "Check.green/1" do
+    test "function returns :ok" do
+      assert Check.green(true) == :ok
+    end
+end
+
+describe "Check.red" do
+    test "function returns false" do
+      refute Check.red(:ok)
+    end
+  
+end
 end

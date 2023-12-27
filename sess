@@ -13,51 +13,14 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +1 ~/dev/ex/midterm/check_point/lib/check_point_web/schema.ex
-badd +34 ~/dev/ex/midterm/check_point/test/check_point_web/schema/check_mutation_test.exs
-badd +13 ~/dev/ex/midterm/check_point/lib/check_point_web/schema/check_mutations.ex
-badd +14 ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/check.ex
-badd +1 ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/contact.ex
-badd +3 ~/dev/ex/midterm/check_point/lib/check_point_web/types/check.ex
-badd +5 ~/dev/ex/midterm/check_point/lib/check_point_web/types/contact.ex
-badd +21 ~/dev/ex/midterm/check_point/lib/check_point/checks.ex
-badd +27 ~/dev/ex/midterm/check_point/lib/check_point/checks/check.ex
+badd +1 ~/dev/ex/midterm/check_point/lib/check_point/actions/http.ex
+badd +1 ~/dev/ex/midterm/check_point/lib/check_point/check.ex
+badd +0 ~/dev/ex/midterm/check_point/test/check_point/check_test.exs
 argglobal
 %argdel
-edit ~/dev/ex/midterm/check_point/test/check_point_web/schema/check_mutation_test.exs
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe 'vert 1resize ' . ((&columns * 30 + 120) / 241)
-exe 'vert 2resize ' . ((&columns * 210 + 120) / 241)
+edit ~/dev/ex/midterm/check_point/test/check_point/check_test.exs
 argglobal
-enew
-file NvimTree_1
-balt ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/contact.ex
-setlocal fdm=manual
-setlocal fde=
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal nofen
-wincmd w
-argglobal
-balt ~/dev/ex/midterm/check_point/lib/check_point_web/resolvers/check.ex
+balt ~/dev/ex/midterm/check_point/lib/check_point/check.ex
 setlocal fdm=manual
 setlocal fde=
 setlocal fmr={{{,}}}
@@ -68,16 +31,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 34 - ((25 * winheight(0) + 25) / 51)
+let s:l = 1 - ((0 * winheight(0) + 25) / 51)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 34
+keepjumps 1
 normal! 0
-wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 30 + 120) / 241)
-exe 'vert 2resize ' . ((&columns * 210 + 120) / 241)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -85,8 +44,6 @@ endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20
 let &shortmess = s:shortmess_save
-let &winminheight = s:save_winminheight
-let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
