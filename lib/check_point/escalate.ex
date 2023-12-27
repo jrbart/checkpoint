@@ -18,9 +18,8 @@ defmodule CheckPoint.Escalate do
     Task.start(__MODULE__, :run, [arg])
   end
 
-  def run(arg) do
+  def run(_arg) do
     # ...
-    IO.inspect(arg)
     Process.sleep(:infinity)
   end
 end
