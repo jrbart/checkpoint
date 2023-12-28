@@ -15,7 +15,7 @@ defmodule CheckPoint.ChecksTest do
     description: "test",
     action: "green",
     args: "test",
-    opts: "delay: 1000",
+    opts: "delay: 1",
   }
 
 describe "Checks.create_contact/1" do
@@ -43,7 +43,6 @@ describe "Checks.create_contact/1" do
     test "create_check also does create_contact" do
       check = Map.put(@check, :contact, @contact)
       assert {:ok, my_check} = Checks.create_check(check)
-      
       assert my_check.contact.name == "test"
     end
 
@@ -51,12 +50,12 @@ describe "Checks.create_contact/1" do
     test "create_check must take a contact" do
     # raises exption due to DB constraint
     # TODO get validation to catch in changeset
-      try do
-        {:ok, _err} = Checks.create_check(@check)
-        assert :false
-      rescue
-        _e -> assert :true
-      end
+    try do
+      Checks.create_check(@check)
+      refute true
+    rescue
+      _e -> assert true
+    end
     end
 
 

@@ -3,6 +3,7 @@ defmodule CheckPoint.WorkerTest do
   doctest CheckPoint.Worker
   alias CheckPoint.Worker
 
+  # note: in test env delay is ms, in other envs it is minutes
   describe "Worker.check/3" do
     test "function exists" do
       assert Worker.check("exists", fn _ -> :ok end, nil, delay: 10)

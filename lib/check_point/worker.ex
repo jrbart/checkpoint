@@ -1,5 +1,6 @@
 defmodule CheckPoint.Worker do
   use GenServer, restart: :transient
+  require Logger
 
   @moduledoc """
   Each checkpoint is a function being run in a genserver.  If the function returns :ok
@@ -12,13 +13,15 @@ defmodule CheckPoint.Worker do
 
     iex> {:ok, _pid} = CheckPoint.Worker.check("doctest", fn echo -> echo end, :ok, delay: 5)
   """
+@convert_minutes Application.compile_env(:check_point, :convert_minutes)
 
-  def check(name, check_function, args, delay) do
-    start_link(name: name, fn: check_function, args: args, opts: delay)
+  def check(name, check_function, args, delay \\ [delay: 10]) do
+    # convert delay from min to ms (stays in ms for tests)
+    delay_ms = [delay: delay[:delay] * @convert_minutes]
+    start_link(name: name, fn: check_function, args: args, opts: delay_ms)
   end
 
   def start_link(initial) do
-    # IO.inspect(:stderr,initial, label: __MODULE__)
     name = {:via, Registry, {CheckPoint.WorkerReg, initial[:name]}}
     GenServer.start_link(__MODULE__, initial, name: name)
   end
@@ -62,6 +65,7 @@ defmodule CheckPoint.Worker do
   # then it should send_after to wake up later
   @impl true
   def handle_info(:looping, state) do
+    Logger.info("Looping...")
     name = state[:name]
     check_fn = state[:fn]
     args = state[:args]

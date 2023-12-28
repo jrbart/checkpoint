@@ -20,12 +20,13 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
       mutation = """ 
         description: "Test Check", 
         action: "green",
-        args: "google.com", 
-        opts: "" 
+        args: "always pass", 
+        opts: "delay: 5", 
         contact: \"#{contact.name}\"
       """
 
       mutation = "mutation { createCheck( #{mutation} ) { id } }"
+      |> IO.inspect
 
       {:ok, %{data: %{"createCheck" => %{"id" => cid}}}} =
         Absinthe.run(
@@ -42,8 +43,8 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
       mutation = """ 
         description: "Test Check", 
         action: "green",
-        args: "google.com", 
-        opts: "" 
+        args: "always pass", 
+        opts: "delay: 5", 
         contact: "bad_name"
       """
 
@@ -71,8 +72,8 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
         Checks.create_check(%{
           description: "Test check",
         action: "green",
-          args: "google.com",
-          opts: "",
+          args: "always pass",
+          opts: "delay: 5",
           contact_id: contact.id
         })
       

@@ -20,10 +20,15 @@ defmodule CheckPoint.Checks.Check do
     check
     |> Repo.preload(:contact)
     |> cast(params, @available_params)
-    |> validate_required(@required_params)
-    |> foreign_key_constraint(:contact_id)
+    # |> foreign_key_constraint(:contact_id)
     |> cast_assoc(:contact)
+    |> validate_required(@required_params)
   end
   
-  def create_changeset(params \\ %{}), do: changeset(%__MODULE__{}, params)
+  def create_changeset(params \\ %{}) do
+    changeset(%__MODULE__{}, params)
+    # one or the other is reqired but how to validate that?
+    # |> validate_required([:contact_id])
+    # |> validate_required([:contact])
+  end
 end

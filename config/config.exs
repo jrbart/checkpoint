@@ -7,6 +7,10 @@
 # General application configuration
 import Config
 
+# In dev and prod, convert ms to minutes
+config :check_point, 
+  convert_minutes: 1000 * 60
+
 config :check_point,
   ecto_repos: [CheckPoint.Repo]
 

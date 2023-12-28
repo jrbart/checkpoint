@@ -1,4 +1,4 @@
-defmodule CheckPoint.Check do
+defmodule CheckPoint.Action do
   alias CheckPoint.Action
   # These will eventually be functions that get passed to a task.  The task will 
   # run the function with a set of arguements and record the results.
@@ -6,13 +6,17 @@ defmodule CheckPoint.Check do
   @doc """
         Check that action type is valid
 
-        iex> CheckPoint.Check.validate(:ping)
+        iex> CheckPoint.Action.validate(:http)
         ...> :ok
         """
-  def validate(action)
-  def validate(action) when action in [:http, :green, :red], do: :ok
-  def validate(_), do: false
-
+  def validate(action) do
+    if action in ["http", "green", "red"]
+    do
+      action
+    else
+      "red"
+    end
+  end
 
   @doc """
        Send an HTTP (or HTTPS) request and seach the reply for a given string
@@ -21,21 +25,26 @@ defmodule CheckPoint.Check do
   def http(arg, args \\ [regex: "OK"]) do
    Action.Http.check(arg, args) 
   end
+end
 
-
+defmodule CheckPoint.Action.Green do
+  
   @doc """
         Always returns :ok
 
-        iex> CheckPoint.Check.green(1)
+        iex> CheckPoint.Action.Action.Green.check(1)
         ...> :ok
         """
-  def green(_), do: :ok
+  def check(_), do: :ok
+end
 
+defmodule CheckPoint.Action.Red do
+  
   @doc """
         Always returns false
 
-        iex> CheckPoint.Check.red(true)
+        iex> CheckPoint..Action.Red.check(true)
         ...> false
         """
-  def red(_), do: false
+  def check(_), do: false
 end
