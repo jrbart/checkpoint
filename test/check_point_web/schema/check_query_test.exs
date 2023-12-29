@@ -20,7 +20,6 @@ defmodule CheckPointWeb.Schema.CheckQueryTest do
           description: "test",
           action: "green",
           args: "test",
-          opts: "",
           contact: contact
         })
 

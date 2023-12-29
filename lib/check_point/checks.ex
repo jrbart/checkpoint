@@ -53,11 +53,9 @@ defmodule CheckPoint.Checks do
       |> then(fn x -> "Elixir.CheckPoint.Action."<>x end)
       |> String.to_existing_atom
     args = params[:args]
-    delay_str = params[:opts]
-    delay = to_kv(delay_str)
     case Actions.create(Check, params) do
       {:error, _message} -> {:error, "An error occured"}
-      {:ok, res} -> Worker.check(res.id,&action.check/1, args, delay) |> IO.inspect; {:ok, res}
+      {:ok, res} -> Worker.super_check(res.id, &action.check/1, args) |> IO.inspect; {:ok, res}
     end
   end
 
@@ -69,12 +67,4 @@ defmodule CheckPoint.Checks do
     end
   end
 
-  # for now kv is just "delay: xx" or ""
-  # Eventually this need to convert arbitrary kv strings to lists
-  def to_kv(str) do
-     case String.split(str, " ") do
-       [_k,v] -> [delay: String.to_integer(v)] 
-      _ -> [delay: 5]
-     end
-  end
 end

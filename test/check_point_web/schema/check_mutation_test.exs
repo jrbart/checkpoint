@@ -21,7 +21,6 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
         description: "Test Check", 
         action: "green",
         args: "always pass", 
-        opts: "delay: 5", 
         contact: \"#{contact.name}\"
       """
 
@@ -44,7 +43,6 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
         description: "Test Check", 
         action: "green",
         args: "always pass", 
-        opts: "delay: 5", 
         contact: "bad_name"
       """
 
@@ -73,7 +71,6 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
           description: "Test check",
         action: "green",
           args: "always pass",
-          opts: "delay: 5",
           contact_id: contact.id
         })
       

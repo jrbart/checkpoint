@@ -42,11 +42,14 @@ Add a check
 ```elixir
 check = %{
   description: "test",
+  action: "green",
   args: "test",
-  opts: ":delay 1000"
+  opts: ":delay 1000",
+  name: "rbart",
+  contact_id: my_contact.id
 }
 
-{res, my_check} = Checks.create_check(Map.put(check, :contact_id, my_contact.id))
+{res, my_check} = Checks.create_check(check)
 ```
 
 Now play around with the database
@@ -116,13 +119,20 @@ rpid = Process.whereis(CheckPoint.WorkerReg)
 ```
 
 ```elixir
-wlis =
+lis =
   for num <- 0..9 do
-    DynamicSupervisor.start_child(
-      CheckPoint.DynSup,
-      {CheckPoint.Worker, val: 0, delay: 5, args: :ip, name: "worker#{num}"}
-    )
+    CheckPoint.Worker.check("worker#{num}", fn _x -> :down end, args: 0, delay: 0)
   end
+```
+
+```elixir
+# wlis =
+# for num <- 0..9 do
+#  DynamicSupervisor.start_child(
+#   CheckPoint.DynSup,
+#  {CheckPoint.Worker, val: 0, delay: 5, args: :ip, name: "worker#{num}"}
+# )
+# end
 ```
 
 ```elixir
@@ -131,6 +141,10 @@ wlis =
 
 ```elixir
 :sys.get_state(wk)
+```
+
+```elixir
+:sys.get_status(wk)
 ```
 
 ```elixir

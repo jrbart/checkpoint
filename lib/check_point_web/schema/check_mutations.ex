@@ -10,7 +10,6 @@ defmodule CheckPointWeb.Schema.CheckMutation do
       arg :description, :string
       arg :action, :string
       arg :args, :string
-      arg :opts, :string
       arg :contact, :string
 
       resolve &Resolvers.Check.create/2

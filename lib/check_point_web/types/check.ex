@@ -7,7 +7,6 @@ defmodule CheckPointWeb.Types.Check do
     field :description, :string
     field :action, :string
     field :args, :string
-    field :opts, :string
     field :contact, :contact
 
   end

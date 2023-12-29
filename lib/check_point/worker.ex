@@ -8,17 +8,28 @@ defmodule CheckPoint.Worker do
   If it returns :error it will call the Alert moddule which will handle the escalation.
   """
   # API
+@convert_minutes Application.compile_env(:check_point, :convert_minutes)
+
+  @doc """
+        super_check(name, fn, args)
+        start a supervised worker to run fn with args and wait delay between loops
+        """
+  def super_check(name, fun, args) do
+    DynamicSupervisor.start_child(
+      CheckPoint.DynSup,
+      {CheckPoint.Worker, name: name, fn: fun, args: args}
+    )
+  end
+
   @doc """
   Create a checker (GenServer) to repeat a check function.
 
-    iex> {:ok, _pid} = CheckPoint.Worker.check("doctest", fn echo -> echo end, :ok, delay: 5)
+    iex> {:ok, _pid} = CheckPoint.Worker.check("doctest", fn echo -> echo end, :ok)
   """
-@convert_minutes Application.compile_env(:check_point, :convert_minutes)
-
-  def check(name, check_function, args, delay \\ [delay: 10]) do
+  def check(name, check_function, args) do
     # convert delay from min to ms (stays in ms for tests)
-    delay_ms = [delay: delay[:delay] * @convert_minutes]
-    start_link(name: name, fn: check_function, args: args, opts: delay_ms)
+    delay_ms = [delay: 1 * @convert_minutes]
+    start_link(name: name, fn: check_function, args: args, delay: delay_ms)
   end
 
   def start_link(initial) do
@@ -37,16 +48,16 @@ defmodule CheckPoint.Worker do
   # continue with any setup that needs to be done on init
   @impl true
   def handle_continue(_continue_arg, state) do
+    # start the loop
+    Process.send(self(), :looping, [])
     {:noreply, state}
   end
 
   # call the check function and wait for the results
   @impl true
   def handle_call(_request, _from, state) do
-    _name = state[:name]
     check_fn = state[:fn]
     args = state[:args]
-    _opts = state[:opts]
     reply = check_fn.(args)
     {:reply, reply, state}
   end
@@ -69,7 +80,6 @@ defmodule CheckPoint.Worker do
     name = state[:name]
     check_fn = state[:fn]
     args = state[:args]
-    opts = state[:opts]
     level = state[:level]
 
     results =
@@ -77,12 +87,12 @@ defmodule CheckPoint.Worker do
       |> CheckPoint.Record.log(name)
       |> CheckPoint.Escalate.alert(name,level)
 
-    # If results is not positive then change timing and start counting
+    # If results is not :ok or :up then shorten timing and start counting
     {time, level} =
       case results do
-        :ok -> {opts[:delay], 0}
-        :up -> {opts[:delay], 0}
-        _ -> {div(opts[:delay], 10), level + 1}
+        :ok -> {3*@convert_minutes, 0}
+        :up -> {3*@convert_minutes, 0}
+        _ -> {@convert_minutes, level + 1}
       end
 
 
