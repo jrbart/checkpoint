@@ -43,13 +43,12 @@ Add a check
 check = %{
   description: "test",
   action: "green",
-  args: "test",
-  opts: ":delay 1000",
+  args: "",
   name: "rbart",
   contact_id: my_contact.id
 }
 
-{res, my_check} = Checks.create_check(check)
+# {res, my_check} = Checks.create_check(check)
 ```
 
 Now play around with the database
@@ -66,8 +65,7 @@ Checks.list_checks() |> Repo.preload(:contact)
 Checks.create_check(%{
   description: "Google",
   args: "google.com",
-  opts: "",
-  contact_id: my_contact.id
+  contact: my_contact.name
 })
 ```
 
@@ -121,7 +119,7 @@ rpid = Process.whereis(CheckPoint.WorkerReg)
 ```elixir
 lis =
   for num <- 0..9 do
-    CheckPoint.Worker.check("worker#{num}", fn _x -> :down end, args: 0, delay: 0)
+    CheckPoint.Worker.check("worker#{num}", fn _x -> :down end, args: 0)
   end
 ```
 

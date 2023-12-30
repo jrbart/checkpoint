@@ -8,11 +8,13 @@ defmodule CheckPoint.Checks do
   end
 
   def find_contact(params) do
-    case Actions.find(Contact, params) do
+    with {:ok, contact} <- Actions.find(Contact, params) do
       # For some reason Absinthe gets all discombobulated with %ErrorMessage
-      {:error, _message} -> {:error, "An error occured"}
-      res -> res
+      {:ok, contact}
+    else 
+      {:error, err} -> {:error, Atom.to_string(err.code)}
     end
+
   end
 
   def update_contact(id, params) do
@@ -20,16 +22,18 @@ defmodule CheckPoint.Checks do
   end
 
   def create_contact(params) do
-    case Actions.create(Contact, params) do
-      {:error, _message} -> {:error, "An error occured"}
-      res -> res
+    with {:ok, contact} <- Actions.create(Contact, params) do
+      {:ok, contact}
+    else 
+      {:error, _err} -> {:error, "could not create contact (duplicate?)"}
     end
   end
 
   def delete_contact(params) do
-    case Actions.delete(Contact,params) do
-      {:error, _message} -> {:error, "An error occured"}
-      res -> res
+    with {:ok, contact} <- Actions.delete(Contact,params) do
+      {:ok, contact}
+    else 
+      {:error, err} -> {:error, Atom.to_string(err.code)}
     end
   end
 
@@ -38,10 +42,10 @@ defmodule CheckPoint.Checks do
   end
 
   def find_check(params) do
-    case Actions.find(Check, params) do
-      # For some reason Absinthe gets all discombobulated with %ErrorMessage
-      {:error, _message} -> {:error, "An error occured"}
-      res -> res
+    with {:ok, check} <- Actions.find(Check, params) do
+      {:ok, check}
+    else
+      {:error, _err} -> {:error, "not found"}
     end
   end
 
@@ -53,9 +57,14 @@ defmodule CheckPoint.Checks do
       |> then(fn x -> "Elixir.CheckPoint.Action."<>x end)
       |> String.to_existing_atom
     args = params[:args]
-    case Actions.create(Check, params) do
-      {:error, _message} -> {:error, "An error occured"}
-      {:ok, res} -> Worker.super_check(res.id, &action.check/1, args) |> IO.inspect; {:ok, res}
+    with {:ok, res} <- Actions.create(Check, params),
+         {:ok, pid} = Worker.super_check(res.id, &action.check/1, args)
+    do
+         stat = Worker.status(pid)
+         IO.inspect(stat)
+      {:ok, res}
+    else
+      {:error, _err} -> {:error, "An error occured"}
     end
   end
 

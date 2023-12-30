@@ -22,14 +22,19 @@ defmodule CheckPoint.Worker do
   end
 
   @doc """
+        status(pid)
+        return running status of genserver
+        """
+  def status(pid), do: Enum.at(elem(:sys.get_status(pid),3),1)
+
+  @doc """
   Create a checker (GenServer) to repeat a check function.
 
     iex> {:ok, _pid} = CheckPoint.Worker.check("doctest", fn echo -> echo end, :ok)
   """
   def check(name, check_function, args) do
     # convert delay from min to ms (stays in ms for tests)
-    delay_ms = [delay: 1 * @convert_minutes]
-    start_link(name: name, fn: check_function, args: args, delay: delay_ms)
+    start_link(name: name, fn: check_function, args: args)
   end
 
   def start_link(initial) do
