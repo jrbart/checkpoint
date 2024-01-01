@@ -25,7 +25,6 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
       """
 
       mutation = "mutation { createCheck( #{mutation} ) { id } }"
-      |> IO.inspect
 
       {:ok, %{data: %{"createCheck" => %{"id" => cid}}}} =
         Absinthe.run(

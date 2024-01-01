@@ -1,5 +1,6 @@
 defmodule CheckPoint.Worker do
   use GenServer, restart: :transient
+  alias CheckPoint.WorkerReg
   require Logger
 
   @moduledoc """
@@ -22,10 +23,38 @@ defmodule CheckPoint.Worker do
   end
 
   @doc """
-        status(pid)
+        status(id || pid)
         return running status of genserver
         """
-  def status(pid), do: Enum.at(elem(:sys.get_status(pid),3),1)
+  def status(pid) when is_pid(pid), do: Enum.at(elem(:sys.get_status(pid),3),1)
+  def status(id) when is_integer(id) do
+    case Registry.lookup(WorkerReg, id) do
+      [{pid, _} | _] -> status(pid)
+      _ -> "not in Registry"
+    end
+  end
+  def status(_), do: "unkown worker id"
+  @doc """
+        state(id || pid)
+        """
+  def state(pid) when is_pid(pid), do: :sys.get_state(pid)[:level]
+  def state(id) when is_integer(id) do
+    case Registry.lookup(WorkerReg, id) do
+      [{pid, _} | _] -> state(pid)
+      _ -> "not in Registry"
+    end
+  end
+  def state(_), do: "unknow worker id"
+  @doc """
+        kill(id)
+        looks up worker by id and removes it
+        """
+  def kill(id) do
+    with {pid, _} <- hd(Registry.lookup(WorkerReg,id)) do
+      GenServer.stop(pid, :normal)
+    end
+  :ok
+  end
 
   @doc """
   Create a checker (GenServer) to repeat a check function.
@@ -102,7 +131,7 @@ defmodule CheckPoint.Worker do
 
 
     Process.send_after(self(), :looping, time)
-    {:noreply, [{:level, level} | state]}
+    {:noreply, [{:level, level} | tl(state)]}
   end
 
 end

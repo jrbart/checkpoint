@@ -1,5 +1,6 @@
 defmodule CheckPoint.Checks do
   alias CheckPoint.Worker
+  alias CheckPoint.WorkerReg
   alias CheckPoint.Checks.{Contact,Check}
   alias EctoShorts.Actions
 
@@ -10,17 +11,12 @@ defmodule CheckPoint.Checks do
   def find_contact(params) do
     # For some reason Absinthe gets all discombobulated with %ErrorMessage
     with {:ok, contact} <- Actions.find(Contact, Map.put_new(params,:preload, [:checks])) do
-      contact = Map.put(contact, :checks, 
-        for ch <- contact.checks do 
+        (for ch <- contact.checks, into: %{}
+          do 
           Map.put_new(ch, :is_alive, Worker.status(ch.id))
-        end
-      )
-      contact = Map.put(contact, :checks, 
-        for ch <- contact.checks do 
-          Map.put_new(ch, :level, Worker.state(ch.id))
-        end
-      )
-      {:ok, contact}
+        end)
+        |> IO.inspect
+        {:ok, contact}
     else 
       {:error, err} -> {:error, Atom.to_string(err.code)}
     end
@@ -53,10 +49,9 @@ defmodule CheckPoint.Checks do
 
   def find_check(params) do
     with {:ok, check} <- Actions.find(Check, params) do
-      stat = Worker.status(check.id)
-      check = Map.put_new(check, :is_alive, stat)
-      state = Worker.state(check.id)
-      check = Map.put_new(check, :level, state)
+      {pid, _} = hd(Registry.lookup(WorkerReg, check.id))
+      stat = Worker.status(pid)
+      check = Map.put_new(check, :status, stat)
       {:ok, check}
     else
       {:error, _err} -> {:error, "not found"}
@@ -75,9 +70,7 @@ defmodule CheckPoint.Checks do
          {:ok, pid} = Worker.super_check(res.id, &action.check/1, args)
     do
          stat = Worker.status(pid)
-         res = Map.put_new(res, :is_alive, stat)
-         state = Worker.state(pid)
-         res = Map.put_new(res, :level, state)
+         res = Map.put_new(res, :status, stat)
       {:ok, res}
     else
       {:error, _err} -> {:error, "An error occured creating check"}

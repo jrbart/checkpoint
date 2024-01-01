@@ -30,7 +30,6 @@ defmodule CheckPointWeb.Schema.ContactQueryTest do
         "query { contact( name: \"not_this_name\") { name }}",
         Schema
       )
-      |> IO.inspect
     end
 
     test "retrieves all checks for contact" do

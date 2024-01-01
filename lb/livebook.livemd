@@ -48,7 +48,7 @@ check = %{
   contact_id: my_contact.id
 }
 
-# {res, my_check} = Checks.create_check(check)
+{res, my_check} = Checks.create_check(check)
 ```
 
 Now play around with the database
@@ -62,30 +62,33 @@ Checks.list_checks() |> Repo.preload(:contact)
 ```
 
 ```elixir
+# my_check =
 Checks.create_check(%{
   description: "Google",
+  action: "red",
   args: "google.com",
-  contact: my_contact.name
+  contact_id: my_contact.id
 })
 ```
 
 ```elixir
-Checks.find_check(%{contact: %{name: my_contact.name}})
+Checks.list_checks(%{contact: %{name: my_contact.name}})
 ```
 
 ```elixir
-Checks.create_check(Map.put(check, :contact, %{name: contact.name}))
+Checks.create_check(Map.put(check, :contact_id, my_contact.id))
+```
+
+## Registery Section
+
+```elixir
+Registry.lookup(CheckPoint.WorkerReg, my_check.id)
 ```
 
 ## Escalate Section
 
 ```elixir
 res = Task.start(CheckPoint.Escalate, :run, ["test"])
-```
-
-```elixir
-{_, pid} = res
-:sys.get_status(pid)
 ```
 
 ```elixir
@@ -96,6 +99,18 @@ CheckPoint.Escalate.alert(:err, "test", 0)
 Registry.count(CheckPoint.EscalateReg)
 ```
 
+```elixir
+# :sys.get_status(wk)
+```
+
+```elixir
+# GenServer.stop(wk, :normal)
+```
+
+```elixir
+# Supervisor.stop(CheckPoint.DynSup)
+```
+
 ## Worker Section
 
 ```elixir
@@ -103,12 +118,12 @@ chils = Supervisor.which_children(CheckPoint.DynSup)
 ```
 
 ```elixir
-for {_, pid, _, _} <- chils, do: :sys.get_state(pid)
+dpid = Process.whereis(CheckPoint.DynSup)
+:sys.get_status(dpid)
 ```
 
 ```elixir
-dpid = Process.whereis(CheckPoint.DynSup)
-:sys.get_status(dpid)
+for {_, pid, _, _} <- chils, do: :sys.get_state(pid)
 ```
 
 ```elixir
@@ -141,14 +156,28 @@ lis =
 :sys.get_state(wk)
 ```
 
-```elixir
-:sys.get_status(wk)
-```
+## Section
 
-```elixir
-GenServer.stop(wk, :error)
-```
+Thoughts on things to add...
 
-```elixir
-Supervisor.stop(CheckPoint.DynSup)
-```
+querying a check should also return:
+
+is_alive - whether the check process is running
+
+status - the last result of the check
+
+logs - need to query logs
+
+I need two subscription endpoints for alerts:
+
+contact_alert - gets an update when any check for that contact goes into alert
+
+check_alert - gets an update when a single check goes into alert
+
+These also should get updates when an alert clears
+
+Thoughts on things to test...
+
+when a contact is deleted, also delete all checks
+
+change the contact that a check is linked to (actually, checks don't mutate; delete and create a new one)

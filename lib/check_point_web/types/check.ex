@@ -8,6 +8,8 @@ defmodule CheckPointWeb.Types.Check do
     field :action, :string
     field :args, :string
     field :contact, :contact
+    field :is_alive, :string
+    field :level, :string
 
   end
   
