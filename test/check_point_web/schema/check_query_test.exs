@@ -38,7 +38,6 @@ defmodule CheckPointWeb.Schema.CheckQueryTest do
         Schema
       )
 
-      # |> IO.inspect
     end
   end
 end

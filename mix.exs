@@ -48,6 +48,7 @@ defmodule CheckPoint.MixProject do
 
       {:absinthe, "~> 1.7"},
       {:absinthe_plug, "~> 1.5"},
+      {:absinthe_phoenix, "~> 2.0"},
 
       {:tesla, "~> 1.4"},
     ]

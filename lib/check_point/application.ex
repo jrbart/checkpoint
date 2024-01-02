@@ -10,12 +10,13 @@ defmodule CheckPoint.Application do
     children = [
       # Start the Telemetry supervisor
       CheckPointWeb.Telemetry,
-      # Start the PubSub system
-      {Phoenix.PubSub, name: CheckPoint.PubSub},
-      # Start Finch
-      {Finch, name: CheckPoint.Finch},
       # Start the Endpoint (http/https)
       CheckPointWeb.Endpoint,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: CheckPoint.PubSub},
+      {Absinthe.Subscription, CheckPointWeb.Endpoint},
+      # Start Finch
+      {Finch, name: CheckPoint.Finch},
       # Start a worker by calling: CheckPoint.Worker.start_link(arg)
       # {CheckPoint.Worker, arg}
       {CheckPoint.DynSup, strategy: :one_for_one},

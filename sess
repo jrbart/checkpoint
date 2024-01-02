@@ -13,14 +13,15 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +16 lib/check_point/action.ex
-badd +33 ~/dev/ex/midterm/check_point/lib/check_point/checks.ex
-badd +9 ~/dev/ex/midterm/check_point/test/check_point/check_test.exs
+badd +10 ~/dev/ex/midterm/check_point/test/check_point_web/schema/subscription_test.exs
+badd +1 ~/dev/ex/midterm/check_point/lib/check_point_web/schema.ex
+badd +1 ~/dev/ex/midterm/check_point/lib/check_point_web/schema/check_subscriptions.ex
+badd +1 ~/dev/ex/midterm/check_point/lib/check_point_web/types/check.ex
 argglobal
 %argdel
-edit ~/dev/ex/midterm/check_point/lib/check_point/checks.ex
+edit ~/dev/ex/midterm/check_point/lib/check_point_web/schema.ex
 argglobal
-balt lib/check_point/action.ex
+balt ~/dev/ex/midterm/check_point/lib/check_point_web/schema/check_subscriptions.ex
 setlocal fdm=manual
 setlocal fde=
 setlocal fmr={{{,}}}
@@ -31,12 +32,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 50 - ((42 * winheight(0) + 25) / 51)
+let s:l = 10 - ((9 * winheight(0) + 27) / 54)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 50
-normal! 028|
+keepjumps 10
+normal! 053|
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

@@ -30,7 +30,7 @@ config :check_point, CheckPointWeb.Endpoint,
   render_errors: [
     formats: [json: CheckPointWeb.ErrorJSON],
     layout: false
-  ],
+    ],
   pubsub_server: CheckPoint.PubSub,
   live_view: [signing_salt: "Uk+QjLpK"]
 
