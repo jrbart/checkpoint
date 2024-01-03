@@ -118,7 +118,6 @@ defmodule CheckPoint.Worker do
 
     results =
       check_fn.(args)
-      |> CheckPoint.Record.log(name)
       |> CheckPoint.Escalate.alert(name,level)
 
     # If results is not :ok or :up then shorten timing and start counting
