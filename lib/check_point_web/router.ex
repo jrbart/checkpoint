@@ -13,6 +13,7 @@ defmodule CheckPointWeb.Router do
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
     schema: CheckPointWeb.Schema,
+    socket: CheckPointWeb.UserSocket,
     interface: :playground
   end
 

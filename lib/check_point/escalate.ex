@@ -28,5 +28,11 @@ defmodule CheckPoint.Escalate do
     {:ok, check} = CheckPoint.Checks.find_check(id: id, preload: [:contact])
     Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, check_alert: check.id)
     Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, contact_alert: check.contact.id)
+    CheckPoint.Repo.insert(
+      CheckPoint.Checks.Log.changeset(
+        %CheckPoint.Checks.Log{}, %{action: "alert", op: check.id, description: "check"}))
+    CheckPoint.Repo.insert(
+      CheckPoint.Checks.Log.changeset(
+        %CheckPoint.Checks.Log{}, %{action: "alert", op: check.contact.id, description: "contact"}))
   end
 end

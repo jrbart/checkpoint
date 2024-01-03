@@ -2,7 +2,7 @@ import Config
 
 # In test, use milliseconds instead of minute
 config :check_point,
-  convert_minutes: 1
+  convert_minutes: 10
 
 config :check_point, CheckPoint.Repo,
   database: "check_point_repo",

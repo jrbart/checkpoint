@@ -1,7 +1,7 @@
 defmodule CheckPointWeb.Schema.CheckMutationTest do
   use ExUnit.Case
   alias Ecto.Adapter.Schema
-  use CheckPoint.RepoCase, async: true
+  use CheckPoint.RepoCase, async: false
 
   alias CheckPointWeb.Schema
   alias CheckPoint.Checks
