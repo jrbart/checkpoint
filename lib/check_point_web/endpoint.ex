@@ -12,6 +12,7 @@ defmodule CheckPointWeb.Endpoint do
     same_site: "Lax"
   ]
 
+  # Had to add this for subscriptions
   socket "/socket", CheckPointWeb.UserSocket,
     websocket: true,
     longpoll: false

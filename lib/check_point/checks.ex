@@ -8,8 +8,10 @@ defmodule CheckPoint.Checks do
   end
 
   def find_contact(params) do
-    # For some reason Absinthe gets all discombobulated with %ErrorMessage
+    # Absinthe gets all discombobulated with %ErrorMessage
+    # So I'm handling error from EctoShorts using 'with' macros
     with {:ok, contact} <- Actions.find(Contact, Map.put_new(params,:preload, [:checks])) do
+      # Add info fields from workers to the result
       contact = Map.put(contact, :checks, 
         for ch <- contact.checks do 
           Map.put_new(ch, :is_alive, Worker.status(ch.id))
@@ -53,6 +55,7 @@ defmodule CheckPoint.Checks do
 
   def find_check(params) do
     with {:ok, check} <- Actions.find(Check, params) do
+      # Add info fields from workers to the result
       stat = Worker.status(check.id)
       check = Map.put_new(check, :is_alive, stat)
       state = Worker.state(check.id)
@@ -64,6 +67,7 @@ defmodule CheckPoint.Checks do
   end
 
   def create_check(params) do
+    # convert action from string to function (atom)
     action = 
       params[:action]
       |> CheckPoint.Action.validate
@@ -71,9 +75,11 @@ defmodule CheckPoint.Checks do
       |> then(fn x -> "Elixir.CheckPoint.Action."<>x end)
       |> String.to_existing_atom
     args = params[:args]
+    # add to database, then if successful, start a worker
     with {:ok, res} <- Actions.create(Check, params),
          {:ok, pid} = Worker.super_check(res.id, &action.check/1, args)
     do
+         # Add info fields from workers to the result
          stat = Worker.status(pid)
          res = Map.put_new(res, :is_alive, stat)
          state = Worker.state(pid)
@@ -86,6 +92,7 @@ defmodule CheckPoint.Checks do
 
   def delete_check(%{id: id}) do
     id = String.to_integer(id)
+    # stop the worker first, then if successful remove from database
     Worker.kill(id)
     case Actions.delete(Check,id) do
       {:error, _message} -> {:error, "An error occured deleitng check"}

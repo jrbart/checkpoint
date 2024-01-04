@@ -1,6 +1,6 @@
 defmodule CheckPoint.Action do
   alias CheckPoint.Action
-  # These will eventually be functions that get passed to a task.  The task will 
+  # These are functions that get passed to a task.  The task will 
   # run the function with a set of arguements and record the results.
 
   @doc """
@@ -19,7 +19,7 @@ defmodule CheckPoint.Action do
   end
 
   @doc """
-       Send an HTTP (or HTTPS) request and seach the reply for a given string
+       Send an HTTP (or HTTPS) request and check that it succeeded
   
   """
   def http(arg, args \\ [regex: "OK"]) do

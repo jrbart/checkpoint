@@ -2,10 +2,10 @@ defmodule CheckPoint.Action.Http do
   # alias CheckPoint.Action
   alias Tesla
   @moduledoc """
-  Action which issues an HTTP (or HTTPS) request and uses regex
-  check for given string in reply.
+  Action which issues an HTTP (or HTTPS) request and 
+  returns :ok if request was succesful
 
-  iex> Action.Http.check("google.com", regex: "google")
+  iex> Action.Http.check("google.com", "")
   ...> :ok
   """
   def check(addr, _params \\ []) do

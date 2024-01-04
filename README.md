@@ -2,31 +2,29 @@
 
 A monitoring service to track the status of services that you depend on!
 
-Contacts are checks are added like this:
+The application will run tests repeatedly (default every 3 minutes) and
+trigger and alert if the test fails 3 times in a row.
 
-```
-alias CheckPoint.Checks
+Currently this is developed with a GraphQL interface and with alerts
+handled through triggering subscriptions to GraphQL endpoints.
 
-Checks.create_contact(%{
-    name: "bruce",
-    description: "Bruce Boss",
-    type: "email",
-    detail: "bb@email.com"
-})
+Eventually I want to add multiple types of checks that this can do
+and also multiple types of notifications (Text, email, phone calls...)
 
-Checks.create_check(%{
-        description: "localhost",
-        args: "localhost",
-        opts: "",
-        contact_id: 1
-})
-```
+I also would like to be able to group contact into different accounts
+and provide account management where an account can set a default contact
+to recieve alerts, etc.  This would also require authenication and 
+authorization.
 
-The application will run the test repeatedly (default every 5 minutes) and
-notify the contact if the test fails 3 times in a row.  On the first failure
-it will decrease the interval to 1/10th of the initial value.
+And I will eventually add an HTML dashboard for this management and
+so that contacts can view alerts and history.
 
 ## Take-aways
 
 This project demonstrates the use of GenServers, Tasks, and GraphQL along with Ecto
+
+You Ain't Going to Need IT!  -- While coding this I realized that all the bells
+and whistles for my original idea were not needed to develop a minimum
+viable product (or proof of concept).  I ended up simplifying and simplifying
+multiple times so I could show the simple idea behind the application.
 

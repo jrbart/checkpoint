@@ -8,7 +8,9 @@ defmodule CheckPoint.Worker do
   then it will log the fact that it ran and its results and sleep for a given duration.
   If it returns :error it will call the Alert moddule which will handle the escalation.
   """
+  
   # API
+
 @convert_minutes Application.compile_env(:check_point, :convert_minutes)
 
   @doc """
@@ -34,6 +36,7 @@ defmodule CheckPoint.Worker do
     end
   end
   def status(_), do: "unkown worker id"
+
   @doc """
         state(id || pid)
         """
@@ -45,6 +48,7 @@ defmodule CheckPoint.Worker do
     end
   end
   def state(_), do: "unknow worker id"
+  
   @doc """
         kill(id)
         looks up worker by id and removes it
@@ -65,6 +69,8 @@ defmodule CheckPoint.Worker do
     # convert delay from min to ms (stays in ms for tests)
     start_link(name: name, fn: check_function, args: args)
   end
+
+  # Implementation
 
   def start_link(initial) do
     name = {:via, Registry, {CheckPoint.WorkerReg, initial[:name]}}
@@ -105,9 +111,9 @@ defmodule CheckPoint.Worker do
 
   # this is the main loop
   # the main loop will run the check funtion that was passed
-  # in and record the result.  Then if the result was not :ok
-  # it should notify the alert handler.  If everything was ok
-  # then it should send_after to wake up later
+  # in.  Then if the result was anything beside :ok or :up
+  # it should will the alert handler.
+  # Then it will use send_after to wake up later and repeat
   @impl true
   def handle_info(:looping, state) do
     Logger.info("Looping...")
@@ -116,18 +122,19 @@ defmodule CheckPoint.Worker do
     args = state[:args]
     level = state[:level]
 
+    # Using a pipe here because later we will add logging to it
     results =
       check_fn.(args)
       |> CheckPoint.Escalate.alert(name,level)
 
     # If results is not :ok or :up then shorten timing and start counting
+    # later this delay will be configurable
     {time, level} =
       case results do
         :ok -> {3*@convert_minutes, 0}
         :up -> {3*@convert_minutes, 0}
         _ -> {@convert_minutes, level + 1}
       end
-
 
     Process.send_after(self(), :looping, time)
     {:noreply, [{:level, level} | tl(state)]}

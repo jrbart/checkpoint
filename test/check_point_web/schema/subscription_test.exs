@@ -2,12 +2,6 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
   use CheckPointWeb.SubscriptionCase
   use CheckPoint.RepoCase, async: false
 
-  
-	# use ExUnit.Case
- #  alias Ecto.Adapter.Schema
- #  use CheckPoint.RepoCase, async: false
-
-  # alias CheckPointWeb.Schema
   alias CheckPoint.Checks
 
   describe "subscription" do

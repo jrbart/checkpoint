@@ -1,7 +1,7 @@
 defmodule CheckPointWeb.Schema.ContactSubscription do
   use Absinthe.Schema.Notation
 
-  @desc "Subscribe to alerts for a single check"
+  @desc "Subscribe to all alerts for a contact"
   object :contact_subscriptions do
     @doc "Alert was escalated"
     field :contact_alert, :check do
