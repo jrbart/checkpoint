@@ -23,6 +23,7 @@ defmodule CheckPoint.Application do
       {Registry, keys: :unique, name: CheckPoint.WorkerReg},
       {Registry, keys: :unique, name: CheckPoint.EscalateReg},
        CheckPoint.Repo,
+      CheckPoint.StartUp
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

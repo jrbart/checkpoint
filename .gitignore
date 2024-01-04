@@ -25,6 +25,9 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 check_point-*.tar
 
+# Ignore livebook directory
+/lb/
+
 # ignore postgres
 .pg
 logfile
