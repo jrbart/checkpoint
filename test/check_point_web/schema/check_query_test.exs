@@ -1,5 +1,5 @@
 defmodule CheckPointWeb.Schema.CheckQueryTest do
-	use ExUnit.Case
+  use ExUnit.Case
   alias Ecto.Adapter.Schema
   use CheckPoint.RepoCase, async: false
 
@@ -37,7 +37,6 @@ defmodule CheckPointWeb.Schema.CheckQueryTest do
         "query { check( id: 0) { id }}",
         Schema
       )
-
     end
   end
 end

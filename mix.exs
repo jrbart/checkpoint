@@ -45,12 +45,11 @@ defmodule CheckPoint.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:ecto_shorts, "~> 2.3"},
       {:error_message, "~> 0.3.2"},
-
       {:absinthe, "~> 1.7"},
       {:absinthe_plug, "~> 1.5"},
       {:absinthe_phoenix, "~> 2.0"},
-
       {:tesla, "~> 1.4"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 

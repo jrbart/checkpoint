@@ -16,8 +16,8 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
           type: "email",
           detail: "jrb@codingp.com"
         })
-      
-      mutation = """ 
+
+      mutation = """
         description: "Test Check", 
         action: "green",
         args: "always pass", 
@@ -38,7 +38,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
     end
 
     test "fails with bad contact name" do
-      mutation = """ 
+      mutation = """
         description: "Test Check", 
         action: "green",
         args: "always pass", 
@@ -55,7 +55,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
 
       assert res.message == "cannot find contact"
     end
-    
+
     test "delete check" do
       {:ok, contact} =
         Checks.create_contact(%{
@@ -68,14 +68,14 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
       {:ok, check} =
         Checks.create_check(%{
           description: "Test check",
-        action: "green",
+          action: "green",
           args: "always pass",
           contact_id: contact.id
         })
-      
+
       mutation = "mutation { deleteCheck( id: #{check.id} ) { id } }"
 
-       {:ok, %{data: %{"deleteCheck" => %{"id" => cid}}}} =
+      {:ok, %{data: %{"deleteCheck" => %{"id" => cid}}}} =
         Absinthe.run(
           mutation,
           Schema
@@ -84,5 +84,5 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
       cid = String.to_integer(cid)
       {:error, _} = Checks.find_contact(%{id: cid})
     end
-   end
+  end
 end

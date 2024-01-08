@@ -1,22 +1,21 @@
 defmodule CheckPoint.Worker do
   use GenServer, restart: :transient
   alias CheckPoint.WorkerReg
-  require Logger
 
   @moduledoc """
   Each checkpoint is a function being run in a genserver.  If the function returns :ok
   then it will log the fact that it ran and its results and sleep for a given duration.
   If it returns :error it will call the Alert moddule which will handle the escalation.
   """
-  
+
   # API
 
-@convert_minutes Application.compile_env(:check_point, :convert_minutes)
+  @convert_minutes Application.compile_env(:check_point, :convert_minutes)
 
   @doc """
-        super_check(name, fn, args)
-        start a supervised worker to run fn with args and wait delay between loops
-        """
+  super_check(name, fn, args)
+  start a supervised worker to run fn with args and wait delay between loops
+  """
   def super_check(name, fun, args) do
     DynamicSupervisor.start_child(
       CheckPoint.DynSup,
@@ -25,39 +24,44 @@ defmodule CheckPoint.Worker do
   end
 
   @doc """
-        status(id || pid)
-        return running status of genserver
-        """
-  def status(pid) when is_pid(pid), do: Enum.at(elem(:sys.get_status(pid),3),1)
+  status(id || pid)
+  return running status of genserver
+  """
+  def status(pid) when is_pid(pid), do: Enum.at(elem(:sys.get_status(pid), 3), 1)
+
   def status(id) when is_integer(id) do
     case Registry.lookup(WorkerReg, id) do
       [{pid, _} | _] -> status(pid)
       _ -> "not in Registry"
     end
   end
+
   def status(_), do: "unkown worker id"
 
   @doc """
-        state(id || pid)
-        """
+  state(id || pid)
+  """
   def state(pid) when is_pid(pid), do: :sys.get_state(pid)[:level]
+
   def state(id) when is_integer(id) do
     case Registry.lookup(WorkerReg, id) do
       [{pid, _} | _] -> state(pid)
       _ -> "not in Registry"
     end
   end
+
   def state(_), do: "unknow worker id"
-  
+
   @doc """
-        kill(id)
-        looks up worker by id and removes it
-        """
+  kill(id)
+  looks up worker by id and removes it
+  """
   def kill(id) do
-    with {pid, _} <- hd(Registry.lookup(WorkerReg,id)) do
+    with {pid, _} <- hd(Registry.lookup(WorkerReg, id)) do
       GenServer.stop(pid, :normal)
     end
-  :ok
+
+    :ok
   end
 
   @doc """
@@ -116,28 +120,27 @@ defmodule CheckPoint.Worker do
   # Then it will use send_after to wake up later and repeat
   @impl true
   def handle_info(:looping, state) do
-    Logger.info("Looping...")
     name = state[:name]
     check_fn = state[:fn]
     args = state[:args]
     level = state[:level]
 
-    # Using a pipe here because later we will add logging to it
+    # apply check_fn to args and pass to alert
     results =
-      check_fn.(args)
-      |> CheckPoint.Escalate.alert(name,level)
+      args
+      |> check_fn.()
+      |> CheckPoint.Escalate.alert(name, level)
 
     # If results is not :ok or :up then shorten timing and start counting
     # later this delay will be configurable
     {time, level} =
       case results do
-        :ok -> {3*@convert_minutes, 0}
-        :up -> {3*@convert_minutes, 0}
+        :ok -> {3 * @convert_minutes, 0}
+        :up -> {3 * @convert_minutes, 0}
         _ -> {@convert_minutes, level + 1}
       end
 
     Process.send_after(self(), :looping, time)
     {:noreply, [{:level, level} | tl(state)]}
   end
-
 end

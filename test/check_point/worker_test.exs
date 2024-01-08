@@ -1,4 +1,5 @@
 defmodule CheckPoint.WorkerTest do
+  @moduledoc false
   use ExUnit.Case
   doctest CheckPoint.Worker
   alias CheckPoint.Worker
@@ -13,6 +14,5 @@ defmodule CheckPoint.WorkerTest do
       {:ok, pid} = Worker.check("args", fn echo -> echo end, :ok)
       assert :ok == GenServer.call(pid, :ok)
     end
-
   end
 end

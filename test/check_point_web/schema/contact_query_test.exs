@@ -1,5 +1,5 @@
 defmodule CheckPointWeb.Schema.ContactQueryTest do
-	use ExUnit.Case
+  use ExUnit.Case
   alias Ecto.Adapter.Schema
   use CheckPoint.RepoCase, async: false
 
@@ -39,8 +39,9 @@ defmodule CheckPointWeb.Schema.ContactQueryTest do
         type: "email",
         detail: "jrb@codingp.com"
       }
+
       {:ok, contact} =
-      Checks.create_contact( contact )
+        Checks.create_contact(contact)
 
       Checks.create_check(%{
         description: "test1",

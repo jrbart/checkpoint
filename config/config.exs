@@ -8,7 +8,7 @@
 import Config
 
 # In dev and prod, convert ms to minutes
-config :check_point, 
+config :check_point,
   convert_minutes: 1000 * 60
 
 config :check_point,
@@ -30,7 +30,7 @@ config :check_point, CheckPointWeb.Endpoint,
   render_errors: [
     formats: [json: CheckPointWeb.ErrorJSON],
     layout: false
-    ],
+  ],
   pubsub_server: CheckPoint.PubSub,
   live_view: [signing_salt: "Uk+QjLpK"]
 

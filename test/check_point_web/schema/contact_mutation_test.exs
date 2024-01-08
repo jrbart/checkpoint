@@ -8,7 +8,7 @@ defmodule CheckPointWeb.Schema.ContactMutationTest do
 
   describe "&createContact" do
     test "create a contact" do
-      mutation = """ 
+      mutation = """
         name: "new_name", 
         description: "Randy Bartels", 
         type: "email", 
@@ -37,7 +37,7 @@ defmodule CheckPointWeb.Schema.ContactMutationTest do
           detail: "jrb@codingp.com"
         })
 
-      mutation = """ 
+      mutation = """
         id: #{contact.id}
         name: "change_name", 
         detail: "bob@codingp.com" 
@@ -54,9 +54,8 @@ defmodule CheckPointWeb.Schema.ContactMutationTest do
       cid = String.to_integer(cid)
       {:ok, my_contact} = Checks.find_contact(%{id: cid})
       assert "change_name" == my_contact.name
-      
     end
-    
+
     test "delete contact" do
       {:ok, contact} =
         Checks.create_contact(%{
@@ -79,7 +78,6 @@ defmodule CheckPointWeb.Schema.ContactMutationTest do
       cid = String.to_integer(cid)
       {:error, _} = Checks.find_contact(%{id: cid})
       # assert "change_name" == my_contact.nam
-      
     end
   end
 end

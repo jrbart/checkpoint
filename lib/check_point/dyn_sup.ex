@@ -1,4 +1,5 @@
 defmodule CheckPoint.DynSup do
+  @moduledoc false
   # Automatically defines child_spec/1
   use DynamicSupervisor
 

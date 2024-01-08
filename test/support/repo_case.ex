@@ -1,4 +1,5 @@
 defmodule CheckPoint.RepoCase do
+  @moduledoc false
   use ExUnit.CaseTemplate
 
   using do

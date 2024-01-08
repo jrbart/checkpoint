@@ -1,5 +1,6 @@
 defmodule CheckPoint.Escalate do
   use Task, restart: :transient
+  @moduledoc false
 
   def alert(res, name, level)
 

@@ -1,4 +1,5 @@
 defmodule CheckPointWeb.Resolvers.Contact do
+  @moduledoc false
   use Absinthe.Schema.Notation
   alias CheckPoint.Checks
 
@@ -12,7 +13,7 @@ defmodule CheckPointWeb.Resolvers.Contact do
 
   def update(params, _) do
     id = params.id
-    Checks.update_contact(id,params)
+    Checks.update_contact(id, params)
   end
 
   def delete(%{name: name}, _) do

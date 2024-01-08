@@ -1,22 +1,21 @@
 defmodule CheckPointWeb.Router do
   use CheckPointWeb, :router
+  @moduledoc false
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/api"  do
+  scope "/api" do
     pipe_through :api
 
-    forward "/graphql", Absinthe.Plug,
-    schema: CheckPointWeb.Schema
+    forward "/graphql", Absinthe.Plug, schema: CheckPointWeb.Schema
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
-    schema: CheckPointWeb.Schema,
-    socket: CheckPointWeb.UserSocket,
-    interface: :playground
+      schema: CheckPointWeb.Schema,
+      socket: CheckPointWeb.UserSocket,
+      interface: :playground
   end
-
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   # if Application.compile_env(:check_point, :dev_routes) do

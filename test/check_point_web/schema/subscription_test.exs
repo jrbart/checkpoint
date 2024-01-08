@@ -1,6 +1,6 @@
 defmodule CheckPointWeb.Schema.SubscriptionTest do
   use CheckPointWeb.SubscriptionCase
-  use CheckPoint.RepoCase, async: false
+  use CheckPoint.RepoCase
 
   alias CheckPoint.Checks
 
@@ -30,14 +30,15 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
       # Now check should do its job and publish an alert...
       assert_push "subscription:data", data
 
+      # using '=' here to pattern match and validate format
       assert %{
-        subscriptionId: ^sub_id,
-        result: %{
-          data: result_data
-        }
-      } = data
+               subscriptionId: ^sub_id,
+               result: %{
+                 data: result_data
+               }
+             } = data
 
-      assert %{"checkAlert" => %{"id" => to_string(check.id)}} == result_data
+      assert %{"checkAlert" => %{"id" => to_string(check.id)}} === result_data
     end
 
     test "triggers contact_alert when alert occurs", %{socket: socket} do
@@ -61,15 +62,15 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
       assert_reply ref, :ok, %{subscriptionId: sub_id}, 1000
       assert_push "subscription:data", data
 
+      # using '=' here to pattern match and validate format
       assert %{
-        subscriptionId: ^sub_id,
-        result: %{
-          data: result_data
-        }
-      } = data
+               subscriptionId: ^sub_id,
+               result: %{
+                 data: result_data
+               }
+             } = data
 
-      assert %{"contactAlert" => %{"id" => to_string(check.id)}} == result_data
+      assert %{"contactAlert" => %{"id" => to_string(check.id)}} === result_data
     end
-
   end
 end

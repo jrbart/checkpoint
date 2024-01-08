@@ -1,4 +1,5 @@
 defmodule CheckPointWeb.Schema.ContactQuery do
+  @moduledoc false
   use Absinthe.Schema.Notation
 
   alias CheckPointWeb.Resolvers
