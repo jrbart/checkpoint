@@ -7,11 +7,11 @@ defmodule CheckPoint.Checks.Contact do
   alias CheckPoint.{Checks, Repo}
 
   schema "contacts" do
-    field(:name, :string)
-    field(:description, :string)
-    field(:type, :string)
-    field(:detail, :string)
-    has_many(:checks, Checks.Check)
+    field :name, :string 
+    field :description, :string 
+    field :type, :string 
+    field :detail, :string 
+    has_many :checks, Checks.Check 
   end
 
   @required_params [:type, :detail]

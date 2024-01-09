@@ -28,7 +28,7 @@ defmodule CheckPoint.ChecksTest do
       contact = Map.put(@contact, :checks, [@check])
       Checks.Check.changeset(%Checks.Check{}, @check)
       assert {:ok, my_contact} = Checks.create_contact(contact)
-      assert hd(my_contact.checks).description == "test"
+      assert hd(my_contact.checks).description === "test"
     end
 
     test "create_contact must be unique name" do
@@ -42,7 +42,7 @@ defmodule CheckPoint.ChecksTest do
   test "create_check also does create_contact" do
     check = Map.put(@check, :contact, @contact)
     assert {:ok, my_check} = Checks.create_check(check)
-    assert my_check.contact.name == "test"
+    assert my_check.contact.name === "test"
   end
 
   test "create_check must take a contact" do

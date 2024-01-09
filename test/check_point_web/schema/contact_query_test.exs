@@ -1,7 +1,7 @@
 defmodule CheckPointWeb.Schema.ContactQueryTest do
   use ExUnit.Case
   alias Ecto.Adapter.Schema
-  use CheckPoint.RepoCase, async: false
+  use CheckPoint.RepoCase
 
   alias CheckPointWeb.Schema
   alias CheckPoint.Checks
@@ -22,7 +22,7 @@ defmodule CheckPointWeb.Schema.ContactQueryTest do
           Schema
         )
 
-      assert contact.name == cname
+      assert contact.name === cname
     end
 
     test "does not raise or die if they don't exist" do
@@ -65,7 +65,7 @@ defmodule CheckPointWeb.Schema.ContactQueryTest do
           Schema
         )
 
-      assert length(list) == 2
+      assert length(list) === 2
     end
   end
 end

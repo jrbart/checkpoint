@@ -1,7 +1,7 @@
 defmodule CheckPointWeb.Schema.CheckQueryTest do
   use ExUnit.Case
   alias Ecto.Adapter.Schema
-  use CheckPoint.RepoCase, async: false
+  use CheckPoint.RepoCase
 
   alias CheckPointWeb.Schema
   alias CheckPoint.Checks
@@ -29,7 +29,7 @@ defmodule CheckPointWeb.Schema.CheckQueryTest do
           Schema
         )
 
-      assert check.id == String.to_integer(cid)
+      assert check.id === String.to_integer(cid)
     end
 
     test "does not raise or die if they don't exist" do

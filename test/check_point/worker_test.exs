@@ -12,7 +12,7 @@ defmodule CheckPoint.WorkerTest do
 
     test "worker takes args" do
       {:ok, pid} = Worker.check("args", fn echo -> echo end, :ok)
-      assert :ok == GenServer.call(pid, :ok)
+      assert :ok === GenServer.call(pid, :ok)
     end
   end
 end

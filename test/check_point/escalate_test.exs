@@ -7,7 +7,7 @@ defmodule CheckPoint.EscalateTest do
   describe "CheckPoint.Escalate.alert/" do
     test "arg passes through" do
       for res <- [:ok, :up, :error],
-          do: assert(Escalate.alert(res, "test", 0) == res)
+          do: assert(Escalate.alert(res, "test", 0) === res)
     end
   end
 end

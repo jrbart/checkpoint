@@ -6,13 +6,13 @@ defmodule CheckPoint.CheckTest do
 
   describe "Check.http/1" do
     test "function exists" do
-      assert Action.Http.check("http://www.google.com/") == :ok
+      assert Action.Http.check("http://www.google.com/") === :ok
     end
   end
 
   describe "Check.green/1" do
     test "function returns :ok" do
-      assert Action.Green.check(true) == :ok
+      assert Action.Green.check(true) === :ok
     end
   end
 

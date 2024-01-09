@@ -13,7 +13,6 @@ defmodule CheckPoint.Worker do
   @convert_minutes Application.compile_env(:check_point, :convert_minutes)
 
   @doc """
-  super_check(name, fn, args)
   start a supervised worker to run fn with args and wait delay between loops
   """
   def super_check(name, fun, args) do
@@ -24,7 +23,6 @@ defmodule CheckPoint.Worker do
   end
 
   @doc """
-  status(id || pid)
   return running status of genserver
   """
   def status(pid) when is_pid(pid), do: Enum.at(elem(:sys.get_status(pid), 3), 1)
@@ -38,9 +36,6 @@ defmodule CheckPoint.Worker do
 
   def status(_), do: "unkown worker id"
 
-  @doc """
-  state(id || pid)
-  """
   def state(pid) when is_pid(pid), do: :sys.get_state(pid)[:level]
 
   def state(id) when is_integer(id) do
@@ -53,7 +48,6 @@ defmodule CheckPoint.Worker do
   def state(_), do: "unknow worker id"
 
   @doc """
-  kill(id)
   looks up worker by id and removes it
   """
   def kill(id) do
@@ -66,8 +60,6 @@ defmodule CheckPoint.Worker do
 
   @doc """
   Create a checker (GenServer) to repeat a check function.
-
-    iex> {:ok, _pid} = CheckPoint.Worker.check("doctest", fn echo -> echo end, :ok)
   """
   def check(name, check_function, args) do
     # convert delay from min to ms (stays in ms for tests)

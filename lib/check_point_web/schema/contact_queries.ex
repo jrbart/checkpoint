@@ -8,9 +8,9 @@ defmodule CheckPointWeb.Schema.ContactQuery do
   object :contact_queries do
     @desc "Find a contact by name"
     field :contact, :contact do
-      arg(:name, :string)
+      arg :name, :string 
 
-      resolve(&Resolvers.Contact.find/2)
+      resolve &Resolvers.Contact.find/2 
     end
   end
 end

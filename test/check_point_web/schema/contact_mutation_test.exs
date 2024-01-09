@@ -1,7 +1,7 @@
 defmodule CheckPointWeb.Schema.ContactMutationTest do
   use ExUnit.Case
   alias Ecto.Adapter.Schema
-  use CheckPoint.RepoCase, async: false
+  use CheckPoint.RepoCase
 
   alias CheckPointWeb.Schema
   alias CheckPoint.Checks
@@ -25,7 +25,7 @@ defmodule CheckPointWeb.Schema.ContactMutationTest do
 
       cid = String.to_integer(cid)
       {:ok, my_contact} = Checks.find_contact(%{id: cid})
-      assert cid == my_contact.id
+      assert cid === my_contact.id
     end
 
     test "update contact" do
@@ -53,7 +53,7 @@ defmodule CheckPointWeb.Schema.ContactMutationTest do
 
       cid = String.to_integer(cid)
       {:ok, my_contact} = Checks.find_contact(%{id: cid})
-      assert "change_name" == my_contact.name
+      assert "change_name" === my_contact.name
     end
 
     test "delete contact" do
@@ -77,7 +77,7 @@ defmodule CheckPointWeb.Schema.ContactMutationTest do
 
       cid = String.to_integer(cid)
       {:error, _} = Checks.find_contact(%{id: cid})
-      # assert "change_name" == my_contact.nam
+      # assert "change_name" === my_contact.nam
     end
   end
 end

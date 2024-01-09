@@ -6,11 +6,11 @@ defmodule CheckPointWeb.Schema.ContactSubscription do
   object :contact_subscriptions do
     @doc "Alert was escalated"
     field :contact_alert, :check do
-      arg(:id, non_null(:id))
+      arg :id, non_null(:id) 
 
-      config(fn args, _info ->
+      config fn args, _info ->
         {:ok, topic: args.id}
-      end)
+      end 
     end
   end
 end

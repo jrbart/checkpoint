@@ -25,10 +25,10 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
       ref = push_doc(socket, sub)
 
       # Because timing is fast, might have to skip this assert
-      assert_reply ref, :ok, %{subscriptionId: sub_id}, 1000
+      assert_reply(ref, :ok, %{subscriptionId: sub_id}, 1000)
 
       # Now check should do its job and publish an alert...
-      assert_push "subscription:data", data
+      assert_push("subscription:data", data)
 
       # using '=' here to pattern match and validate format
       assert %{
@@ -59,8 +59,8 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
 
       sub = "subscription { contactAlert( id: \"#{check.contact.id}\" ) { id }}"
       ref = push_doc(socket, sub)
-      assert_reply ref, :ok, %{subscriptionId: sub_id}, 1000
-      assert_push "subscription:data", data
+      assert_reply(ref, :ok, %{subscriptionId: sub_id}, 1000)
+      assert_push("subscription:data", data)
 
       # using '=' here to pattern match and validate format
       assert %{
