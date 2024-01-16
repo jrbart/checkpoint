@@ -13,7 +13,7 @@ defmodule CheckPointWeb.Schema.ContactMutation do
       arg :type, :string
       arg :detail, :string
 
-      resolve &Resolvers.Contact.create/2 
+      resolve &Resolvers.Contact.create/2
     end
 
     @desc "Change a contact"
@@ -24,14 +24,14 @@ defmodule CheckPointWeb.Schema.ContactMutation do
       arg :type, :string
       arg :detail, :string
 
-      resolve &Resolvers.Contact.update/2 
+      resolve &Resolvers.Contact.update/2
     end
 
     @desc "Delete a contact"
     field :delete_contact, :contact do
       arg :name, :string
 
-      resolve &Resolvers.Contact.delete/2 
+      resolve &Resolvers.Contact.delete/2
     end
   end
 end

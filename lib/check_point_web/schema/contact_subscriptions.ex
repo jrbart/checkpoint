@@ -4,13 +4,13 @@ defmodule CheckPointWeb.Schema.ContactSubscription do
 
   @desc "Subscribe to all alerts for a contact"
   object :contact_subscriptions do
-    @doc "Alert was escalated"
+    @desc "Alert was escalated"
     field :contact_alert, :check do
-      arg :id, non_null(:id) 
+      arg :id, non_null(:id)
 
       config fn args, _info ->
         {:ok, topic: args.id}
-      end 
+      end
     end
   end
 end

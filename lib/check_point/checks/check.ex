@@ -7,10 +7,10 @@ defmodule CheckPoint.Checks.Check do
   alias CheckPoint.{Checks, Repo}
 
   schema "checks" do
-    field :description, :string 
-    field :action, :string 
-    field :args, :string 
-    belongs_to :contact, Checks.Contact 
+    field :description, :string
+    field :action, :string
+    field :args, :string
+    belongs_to :contact, Checks.Contact
   end
 
   @required_params [:description, :action]

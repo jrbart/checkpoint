@@ -10,7 +10,7 @@ defmodule CheckPointWeb.Schema.CheckQuery do
     field :check, :check do
       arg :id, :id
 
-      resolve &Resolvers.Check.find/2 
+      resolve &Resolvers.Check.find/2
     end
   end
 end

@@ -4,12 +4,12 @@ defmodule CheckPointWeb.Types.Check do
 
   @desc "A Check to perform"
   object :check do
-    field :id, :id 
-    field :description, :string 
-    field :action, :string 
-    field :args, :string 
-    field :contact, :contact 
-    field :is_alive, :string 
-    field :level, :string 
+    field :id, :id
+    field :description, :string
+    field :action, :string
+    field :args, :string
+    field :contact, :contact
+    field :is_alive, :string
+    field :level, :string
   end
 end
