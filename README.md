@@ -3,7 +3,7 @@
 A monitoring service to track the status of services that you depend on!
 
 The application will run checks repeatedly (default every 3 minutes) and
-trigger and alert if the checks fails 3 times in a row.
+trigger an alert if the checks fails 3 times in a row.
 
 The check_point database consists of these tables:
 
