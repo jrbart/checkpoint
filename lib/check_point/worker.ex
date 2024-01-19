@@ -15,11 +15,16 @@ defmodule CheckPoint.Worker do
   @doc """
   start a supervised worker to run fn with args and wait delay between loops
   """
-  def super_check(name, fun, args) do
-    DynamicSupervisor.start_child(
-      CheckPoint.DynSup,
-      {CheckPoint.Worker, name: name, fn: fun, args: args}
-    )
+  def run_check(name, fun, args) do
+    with {:ok, pid} <-
+           DynamicSupervisor.start_child(
+             CheckPoint.DynSup,
+             {CheckPoint.Worker, name: name, fn: fun, args: args}
+           ) do
+      {:ok, pid}
+    else
+      {:error, err} -> {:error, ErrorMessage.not_found("Check id #{name}", %{error: err})}
+    end
   end
 
   @doc """

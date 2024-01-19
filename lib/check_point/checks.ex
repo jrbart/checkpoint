@@ -9,33 +9,28 @@ defmodule CheckPoint.Checks do
   end
 
   def find_contact(params) do
-    # Absinthe gets all discombobulated with %ErrorMessage
-    # So I'm handling error from EctoShorts using 'with' macros
     case Actions.find(Contact, Map.put_new(params, :preload, [:checks])) do
       # Add info fields from workers to the result
-      {:error, err} ->
-        {:error, Atom.to_string(err.code)}
+      {:error, %ErrorMessage{} = err} ->
+        {:error, ErrorMessage.to_jsonable_map(err)}
 
       {:ok, contact} ->
-        contact =
-          Map.put(
-            contact,
-            :checks,
-            for ch <- contact.checks do
-              Map.put_new(ch, :is_alive, Worker.status(ch.id))
-            end
-          )
-
-        contact =
-          Map.put(
-            contact,
-            :checks,
-            for ch <- contact.checks do
-              Map.put_new(ch, :level, Worker.state(ch.id))
-            end
-          )
-
-        {:ok, contact}
+        {:ok,
+         contact
+         |> Map.update(
+           :checks,
+           nil,
+           &Enum.map(&1, fn ch ->
+             Map.put_new(ch, :is_alive, Worker.status(ch.id))
+           end)
+         )
+         |> Map.update(
+           :checks,
+           nil,
+           &Enum.map(&1, fn ch ->
+             Map.put_new(ch, :level, Worker.state(ch.id))
+           end)
+         )}
     end
   end
 
@@ -44,15 +39,16 @@ defmodule CheckPoint.Checks do
   end
 
   def create_contact(params) do
-    case Actions.create(Contact, params) do
-      res -> res
-    end
+    Actions.create(Contact, params)
   end
 
   def delete_contact(params) do
     case Actions.delete(Contact, params) do
-      {:error, err} -> {:error, Atom.to_string(err.code)}
-      res -> res
+      {:error, err} ->
+        {:error, ErrorMessage.to_jsonable_map(err)}
+
+      res ->
+        res
     end
   end
 
@@ -65,11 +61,13 @@ defmodule CheckPoint.Checks do
          stat <- Worker.status(check.id),
          state <- Worker.state(check.id) do
       # Add info fields from workers to the result
-      check = Map.put_new(check, :is_alive, stat)
-      check = Map.put_new(check, :level, state)
-      {:ok, check}
+      {:ok,
+       check
+       |> Map.put_new(:is_alive, stat)
+       |> Map.put_new(:level, state)}
     else
-      {:error, _err} -> {:error, "not found"}
+      {:error, err} ->
+        {:error, ErrorMessage.to_jsonable_map(err)}
     end
   end
 
@@ -84,16 +82,17 @@ defmodule CheckPoint.Checks do
 
     args = params[:args]
     # add to database, then if successful, start a worker
-    with {:ok, res} <- Actions.create(Check, params),
-         {:ok, pid} <- Worker.super_check(res.id, &action.check/1, args) do
+    with {:ok, check} <- Actions.create(Check, params),
+         {:ok, _pid} <- Worker.run_check(check.id, &action.check/1, args) do
+      stat = Worker.status(check.id)
+      state = Worker.state(check.id)
       # Add info fields from workers to the result
-      stat = Worker.status(pid)
-      res = Map.put_new(res, :is_alive, stat)
-      state = Worker.state(pid)
-      res = Map.put_new(res, :level, state)
-      {:ok, res}
+      {:ok,
+       check
+       |> Map.put_new(:is_alive, stat)
+       |> Map.put_new(:level, state)}
     else
-      {:error, _err} -> {:error, "An error occured creating check"}
+      {:error, err} -> {:error, err}
     end
   end
 
@@ -102,9 +101,8 @@ defmodule CheckPoint.Checks do
     # stop the worker first, then if successful remove from database
     Worker.kill(id)
 
-    case Actions.delete(Check, id) do
-      {:error, _message} -> {:error, "An error occured deleitng check"}
-      res -> res
+    with {:error, err} <- Actions.delete(Check, id) do
+      {:error, ErrorMessage.to_jsonable_map(err)}
     end
   end
 end

@@ -18,7 +18,7 @@ defmodule CheckPoint.StartUp do
       action =
         String.to_existing_atom("Elixir.CheckPoint.Action." <> String.capitalize(ch.action))
 
-      res = Worker.super_check(ch.id, &action.check/1, ch.args)
+      res = Worker.run_check(ch.id, &action.check/1, ch.args)
       res
     end
 

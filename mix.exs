@@ -50,7 +50,8 @@ defmodule CheckPoint.MixProject do
       {:absinthe_phoenix, "~> 2.0"},
       {:tesla, "~> 1.4"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:styler, "~> 0.11", only: [:dev, :test], runtime: false}
+      {:styler, "~> 0.11", only: [:dev, :test], runtime: false},
+      {:blitz_credo_checks, "~> 0.1", only: [:dev, :test], runtime: false}
     ]
   end
 
