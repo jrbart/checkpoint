@@ -15,10 +15,8 @@ a GET request.  Other services, GREEN and RED, are present for testing and
 will always succeed or fail.  Future services could include ICMP ping, port
 checking, and even searching an HTTP response for a given regex.
 
-contacts - each row gives a short name to the contact, a field for a noame or
-description, and the details to be used to send an alert.  Currently the only
-alerts supported are by triggering a GraphQL subscription, but this can be 
-extended to using chatbots, text paging, email, etc.
+contacts - each row gives a short name to the contact, a field for a description
+(or person's name), and the details to be used to send an alert.
 
 The monitoring service consists of Watchers, Alarms, and Alerts.
 
@@ -28,13 +26,13 @@ time and repeat.
 
 An Alarm is set when a check fails the first time.  It will run the same check
 but at a faster pace.  If the alarm fails three times in a row, it will send
-and Alert to the contact for the check.  If the alarm succeeds even once, it
-stop without sending an Alert.
+an Alert to the contact for the check.  If the alarm succeeds even once, it
+stops without sending an Alert.
 
 Currently the only Alert that is supported is to trigger a Graphql endpoint.  It
 is only run once, but is implemented as a Task so that any processing can be 
 offloaded from the Alarm, and to make it modular to drop in multiple types
-of Alerts.
+of Alerts like using chatbots, text paging, email, etc.
 
 Roadmap:
 
