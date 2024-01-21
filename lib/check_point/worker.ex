@@ -99,7 +99,7 @@ defmodule CheckPoint.Worker do
   def handle_call(_request, _from, state) do
     check_fn = state[:fn]
     args = state[:args]
-    reply = check_fn.(args)
+    reply = apply(CheckPoint.Service, check_fn, [args])
     {:reply, reply, state}
   end
 
@@ -125,7 +125,7 @@ defmodule CheckPoint.Worker do
     # apply check_fn to args and pass to alert
     results =
       args
-      |> check_fn.()
+      |> then(fn args -> apply(CheckPoint.Service,check_fn,[args]) end)
       |> CheckPoint.Escalate.alert(name, level)
 
     # If results is not :ok or :up then shorten timing and start counting

@@ -4,7 +4,7 @@ defmodule CheckPoint.Repo.Migrations.CreateChecks do
   def change do
     create table(:checks) do
       add :description, :text
-      add :action, :text
+      add :service, :text
       add :args, :text
       add :contact_id, references(:contacts), null: :false
     end

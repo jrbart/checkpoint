@@ -19,7 +19,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
 
       mutation = """
         description: "Test Check", 
-        action: "green",
+        service: "green",
         args: "always pass", 
         contact: \"#{contact.name}\"
       """
@@ -40,7 +40,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
     test "fails with bad contact name" do
       mutation = """
         description: "Test Check", 
-        action: "green",
+        service: "green",
         args: "always pass", 
         contact: "bad_name"
       """
@@ -68,7 +68,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
       {:ok, check} =
         Checks.create_check(%{
           description: "Test check",
-          action: "green",
+          service: "green",
           args: "always pass",
           contact_id: contact.id
         })

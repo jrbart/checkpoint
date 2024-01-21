@@ -8,12 +8,12 @@ defmodule CheckPoint.Checks.Check do
 
   schema "checks" do
     field :description, :string
-    field :action, :string
+    field :service, :string
     field :args, :string
     belongs_to :contact, Checks.Contact
   end
 
-  @required_params [:description, :action]
+  @required_params [:description, :service]
   @available_params [:id, :args, :contact_id | @required_params]
 
   def changeset(check = %Checks.Check{}, params) do

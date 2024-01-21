@@ -1,24 +1,23 @@
 defmodule CheckPoint.CheckTest do
   @moduledoc false
   use ExUnit.Case
-  doctest CheckPoint.Action
-  alias CheckPoint.Action
+  alias CheckPoint.Service
 
   describe "Check.http/1" do
     test "function exists" do
-      assert Action.Http.check("http://www.google.com/") === :ok
+      assert Service.http("http://www.google.com/") === :ok
     end
   end
 
   describe "Check.green/1" do
     test "function returns :ok" do
-      assert Action.Green.check(true) === :ok
+      assert Service.green(true) === :ok
     end
   end
 
   describe "Check.red" do
     test "function returns false" do
-      refute Action.Red.check(:ok)
+      refute Service.red(:ok)
     end
   end
 end

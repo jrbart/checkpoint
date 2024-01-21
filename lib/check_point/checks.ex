@@ -72,18 +72,16 @@ defmodule CheckPoint.Checks do
   end
 
   def create_check(params) do
-    # convert action from string to function (atom)
-    action =
-      params[:action]
-      |> CheckPoint.Action.validate()
-      |> String.capitalize()
-      |> then(fn x -> "Elixir.CheckPoint.Action." <> x end)
-      |> String.to_existing_atom()
+    # convert service from string to function (atom)
+    service =
+      params[:service]
+      |> CheckPoint.Service.validate()
+      |> String.to_existing_atom()    
 
     args = params[:args]
     # add to database, then if successful, start a worker
     with {:ok, check} <- Actions.create(Check, params),
-         {:ok, _pid} <- Worker.run_check(check.id, &action.check/1, args) do
+         {:ok, _pid} <- Worker.run_check(check.id, service, args) do
       stat = Worker.status(check.id)
       state = Worker.state(check.id)
       # Add info fields from workers to the result

@@ -45,7 +45,7 @@ defmodule CheckPointWeb.Schema.ContactQueryTest do
 
       Checks.create_check(%{
         description: "test1",
-        action: "green",
+        service: "green",
         args: "test",
         opts: "",
         contact_id: contact.id
@@ -53,7 +53,7 @@ defmodule CheckPointWeb.Schema.ContactQueryTest do
 
       Checks.create_check(%{
         description: "test2",
-        action: "green",
+        service: "green",
         args: "test",
         opts: "",
         contact_id: contact.id

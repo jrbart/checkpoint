@@ -9,7 +9,7 @@ defmodule CheckPointWeb.Schema.CheckMutation do
     @desc "Create a new check"
     field :create_check, :check do
       arg :description, :string
-      arg :action, :string
+      arg :service, :string
       arg :args, :string
       arg :contact, :string
 

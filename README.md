@@ -10,13 +10,13 @@ The check_point database consists of these tables:
 checks - each row contains the check service to be monitored, the target (URL) 
 that is running that service, and a link to the contact that should be alerted
 if the service fails.  Currently the only service that can be monitored is
-HTTP(S), and will succeed or fail based on the URL giving a reply when sent 
-a GET request.  Other services, GREEN and RED, are present for testing and 
+HTTP(S), and will succeed or fail based on the URL responding without error when 
+sent a GET request.  Other services, GREEN and RED, are present for testing and 
 will always succeed or fail.  Future services could include ICMP ping, port
 checking, and even searching an HTTP response for a given regex.
 
 contacts - each row gives a short name to the contact, a field for a description
-(or person's name), and the details to be used to send an alert.
+(or person's name), and the details to be used to send an alert (currently not used).
 
 The monitoring service consists of Watchers, Alarms, and Alerts.
 
