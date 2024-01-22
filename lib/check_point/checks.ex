@@ -1,5 +1,5 @@
 defmodule CheckPoint.Checks do
-  alias CheckPoint.Worker
+  alias CheckPoint.Watcher
   alias CheckPoint.Checks.{Contact, Check}
   alias EctoShorts.Actions
   @moduledoc false
@@ -21,14 +21,14 @@ defmodule CheckPoint.Checks do
            :checks,
            nil,
            &Enum.map(&1, fn ch ->
-             Map.put_new(ch, :is_alive, Worker.status(ch.id))
+             Map.put_new(ch, :is_alive, Watcher.status(ch.id))
            end)
          )
          |> Map.update(
            :checks,
            nil,
            &Enum.map(&1, fn ch ->
-             Map.put_new(ch, :level, Worker.state(ch.id))
+             Map.put_new(ch, :level, Watcher.state(ch.id))
            end)
          )}
     end
@@ -58,8 +58,8 @@ defmodule CheckPoint.Checks do
 
   def find_check(params) do
     with {:ok, check} <- Actions.find(Check, params),
-         stat <- Worker.status(check.id),
-         state <- Worker.state(check.id) do
+         stat <- Watcher.status(check.id),
+         state <- Watcher.state(check.id) do
       # Add info fields from workers to the result
       {:ok,
        check
@@ -81,9 +81,9 @@ defmodule CheckPoint.Checks do
     args = params[:args]
     # add to database, then if successful, start a worker
     with {:ok, check} <- Actions.create(Check, params),
-         {:ok, _pid} <- Worker.run_check(check.id, service, args) do
-      stat = Worker.status(check.id)
-      state = Worker.state(check.id)
+         {:ok, _pid} <- Watcher.start_watcher(check.id, service, args) do
+      stat = Watcher.status(check.id)
+      state = Watcher.state(check.id)
       # Add info fields from workers to the result
       {:ok,
        check
@@ -97,7 +97,7 @@ defmodule CheckPoint.Checks do
   def delete_check(%{id: id}) do
     id = String.to_integer(id)
     # stop the worker first, then if successful remove from database
-    Worker.kill(id)
+    Watcher.kill(id)
 
     with {:error, err} <- Actions.delete(Check, id) do
       {:error, ErrorMessage.to_jsonable_map(err)}

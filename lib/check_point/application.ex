@@ -17,9 +17,9 @@ defmodule CheckPoint.Application do
       {Absinthe.Subscription, CheckPointWeb.Endpoint},
       # Start Finch
       {Finch, name: CheckPoint.Finch},
-      # Start a Dynamic Supervisor for Workers
-      {CheckPoint.DynSup, strategy: :one_for_one},
-      {Registry, keys: :unique, name: CheckPoint.WorkerReg},
+      # Start a Dynamic Supervisor for Watcher
+      {DynamicSupervisor, strategy: :one_for_one, name: CheckPoint.WatchSup},
+      {Registry, keys: :unique, name: CheckPoint.WatcherReg},
       CheckPoint.Repo,
       # Load existing checks from database on startup
       CheckPoint.StartUp

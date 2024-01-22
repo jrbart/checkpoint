@@ -1,6 +1,6 @@
-defmodule CheckPoint.Worker do
+defmodule CheckPoint.Watcher do
   use GenServer, restart: :transient
-  alias CheckPoint.WorkerReg
+  alias CheckPoint.WatcherReg
 
   @moduledoc """
   Each checkpoint is a function being run in a genserver.  If the function returns :ok
@@ -15,11 +15,11 @@ defmodule CheckPoint.Worker do
   @doc """
   start a supervised worker to run fn with args and wait delay between loops
   """
-  def run_check(name, fun, args) do
+  def start_watcher(name, fun, args) do
     with {:ok, pid} <-
            DynamicSupervisor.start_child(
-             CheckPoint.DynSup,
-             {CheckPoint.Worker, name: name, fn: fun, args: args}
+             CheckPoint.WatchSup,
+             {CheckPoint.Watcher, name: name, fn: fun, args: args}
            ) do
       {:ok, pid}
     else
@@ -33,7 +33,7 @@ defmodule CheckPoint.Worker do
   def status(pid) when is_pid(pid), do: Enum.at(elem(:sys.get_status(pid), 3), 1)
 
   def status(id) when is_integer(id) do
-    case Registry.lookup(WorkerReg, id) do
+    case Registry.lookup(WatcherReg, id) do
       [{pid, _} | _] -> status(pid)
       _ -> "not in Registry"
     end
@@ -44,7 +44,7 @@ defmodule CheckPoint.Worker do
   def state(pid) when is_pid(pid), do: :sys.get_state(pid)[:level]
 
   def state(id) when is_integer(id) do
-    case Registry.lookup(WorkerReg, id) do
+    case Registry.lookup(WatcherReg, id) do
       [{pid, _} | _] -> state(pid)
       _ -> "not in Registry"
     end
@@ -56,7 +56,7 @@ defmodule CheckPoint.Worker do
   looks up worker by id and removes it
   """
   def kill(id) do
-    with {pid, _} <- hd(Registry.lookup(WorkerReg, id)) do
+    with {pid, _} <- hd(Registry.lookup(WatcherReg, id)) do
       GenServer.stop(pid, :normal)
     end
 
@@ -74,7 +74,7 @@ defmodule CheckPoint.Worker do
   # Implementation
 
   def start_link(initial) do
-    name = {:via, Registry, {CheckPoint.WorkerReg, initial[:name]}}
+    name = {:via, Registry, {CheckPoint.WatcherReg, initial[:name]}}
     GenServer.start_link(__MODULE__, initial, name: name)
   end
 
@@ -128,12 +128,11 @@ defmodule CheckPoint.Worker do
       |> then(fn args -> apply(CheckPoint.Service,check_fn,[args]) end)
       |> CheckPoint.Escalate.alert(name, level)
 
-    # If results is not :ok or :up then shorten timing and start counting
+    # If results is not :ok then shorten timing and start counting
     # later this delay will be configurable
     {time, level} =
       case results do
         :ok -> {3 * @convert_minutes, 0}
-        :up -> {3 * @convert_minutes, 0}
         _ -> {@convert_minutes, level + 1}
       end
 

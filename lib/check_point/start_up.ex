@@ -1,7 +1,7 @@
 defmodule CheckPoint.StartUp do
   use GenServer, restart: :transient
   alias CheckPoint.Checks
-  alias CheckPoint.Worker
+  alias CheckPoint.Watcher
   @moduledoc false
 
   # Using a GenServer to pull check from database and fire
@@ -18,7 +18,7 @@ defmodule CheckPoint.StartUp do
       action =
         String.to_existing_atom("Elixir.CheckPoint.Action." <> String.capitalize(ch.action))
 
-      res = Worker.run_check(ch.id, &action.check/1, ch.args)
+      res = Watcher.start_watcher(ch.id, &action.check/1, ch.args)
       res
     end
 
