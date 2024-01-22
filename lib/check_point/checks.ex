@@ -103,4 +103,10 @@ defmodule CheckPoint.Checks do
       {:error, ErrorMessage.to_jsonable_map(err)}
     end
   end
+
+  def push_alert(id) do
+    {:ok, check} = CheckPoint.Checks.find_check(id: id, preload: [:contact])
+    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, check_alert: check.id)
+    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, contact_alert: check.contact.id)
+  end
 end

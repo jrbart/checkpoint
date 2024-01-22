@@ -20,6 +20,9 @@ defmodule CheckPoint.Application do
       # Start a Dynamic Supervisor for Watcher
       {DynamicSupervisor, strategy: :one_for_one, name: CheckPoint.WatchSup},
       {Registry, keys: :unique, name: CheckPoint.WatcherReg},
+      # Start a Dynamic Supervisor for Alarm
+      {DynamicSupervisor, strategy: :one_for_one, name: CheckPoint.AlarmSup},
+      {Registry, keys: :unique, name: CheckPoint.AlarmReg},
       CheckPoint.Repo,
       # Load existing checks from database on startup
       CheckPoint.StartUp

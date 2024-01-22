@@ -1,13 +1,13 @@
-defmodule CheckPoint.EscalateTest do
+defmodule CheckPoint.AlertTest do
   @moduledoc false
   use ExUnit.Case
-  doctest CheckPoint.Escalate
-  alias CheckPoint.Escalate
+  doctest CheckPoint.Alert
+  alias CheckPoint.Alert
 
-  describe "CheckPoint.Escalate.alert/" do
+  describe "&CheckPoint.Alert.alert/3" do
     test "arg passes through" do
-      for res <- [:ok, :up, :error],
-          do: assert(Escalate.alert(res, "test", 0) === res)
+      for res <- [:ok, :error],
+          do: assert(Alert.alert(res, 0, 0) === res)
     end
   end
 end

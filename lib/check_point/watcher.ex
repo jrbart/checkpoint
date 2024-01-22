@@ -126,7 +126,7 @@ defmodule CheckPoint.Watcher do
     results =
       args
       |> then(fn args -> apply(CheckPoint.Service,check_fn,[args]) end)
-      |> CheckPoint.Escalate.alert(name, level)
+      |> CheckPoint.Alert.alert(name, level)
 
     # If results is not :ok then shorten timing and start counting
     # later this delay will be configurable
