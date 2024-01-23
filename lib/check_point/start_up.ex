@@ -15,10 +15,12 @@ defmodule CheckPoint.StartUp do
   @impl true
   def init(arg) do
     for ch <- Checks.list_checks() do
-      action =
-        String.to_existing_atom("Elixir.CheckPoint.Action." <> String.capitalize(ch.action))
+      service =
+        ch.service
+      |> CheckPoint.Service.validate()
+      |> String.to_existing_atom()
 
-      res = Watcher.start_watcher(ch.id, &action.check/1, ch.args)
+      res = Watcher.start_watcher(ch.id, service, ch.args)
       res
     end
 

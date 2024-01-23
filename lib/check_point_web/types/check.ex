@@ -6,7 +6,7 @@ defmodule CheckPointWeb.Types.Check do
   object :check do
     field :id, :id
     field :description, :string
-    field :action, :string
+    field :service, :string
     field :args, :string
     field :contact, :contact
     field :is_alive, :string

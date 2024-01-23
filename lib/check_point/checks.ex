@@ -1,5 +1,5 @@
 defmodule CheckPoint.Checks do
-  alias CheckPoint.Watcher
+  alias CheckPoint.{Watcher,Alarm}
   alias CheckPoint.Checks.{Contact, Check}
   alias EctoShorts.Actions
   @moduledoc false
@@ -28,7 +28,7 @@ defmodule CheckPoint.Checks do
            :checks,
            nil,
            &Enum.map(&1, fn ch ->
-             Map.put_new(ch, :level, Watcher.state(ch.id))
+             Map.put_new(ch, :level, Alarm.state(ch.id))
            end)
          )}
     end

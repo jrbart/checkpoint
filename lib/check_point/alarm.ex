@@ -3,17 +3,17 @@ defmodule CheckPoint.Alarm do
   alias CheckPoint.AlarmReg
 
   @moduledoc """
-  Each checkpoint is a function being run in a genserver.  If the function returns :ok
-  then it will log the fact that it ran and its results and sleep for a given duration.
-  If it returns :error it will call the Alert moddule which will handle the escalation.
+  Each Alarm runs a checkpoint function in a genserver.  If the function returns :ok
+  then it will stop the Alarm.  If it returns :error it will call the Alert moddule 
+  which will handle the escalation.
   """
 
   # API
-  # When checking an alarm, check 10 times faster than a Watch would
-  @convert_minutes div(Application.compile_env(:check_point, :convert_minutes), 10)
+  # When checking an alarm, check every minute
+  @convert_minutes Application.compile_env(:check_point, :convert_minutes)
 
   @doc """
-  start a supervised worker to run fn with args and wait delay between loops
+  start a supervised worker to run fn with args and wait between loops
   """
   def create_alarm(name, fun, args) do
     with {:ok, pid} <-
@@ -53,7 +53,7 @@ defmodule CheckPoint.Alarm do
   def state(_), do: "unknow alarm id"
 
   @doc """
-  looks up worker by id and removes it
+  looks up genserver by id and removes it
   """
   def kill(id) do
     with {pid, _} <- hd(Registry.lookup(AlarmReg, id)) do
@@ -63,14 +63,6 @@ defmodule CheckPoint.Alarm do
     :ok
   end
 
-  @doc """
-  Create a Alarm (GenServer)
-  """
-  def check(name, check_function, args) do
-    # convert delay from min to ms (stays in ms for tests)
-    start_link(name: name, fn: check_function, args: args)
-  end
-
   # Implementation
 
   def start_link(initial) do
@@ -78,8 +70,7 @@ defmodule CheckPoint.Alarm do
     GenServer.start_link(__MODULE__, initial, name: name)
   end
 
-  # the initialization showld quckly return so the engine can move on to 
-  # initializing the rest of the checks.
+  # the initialization showld quckly return so the engine can move on 
   @impl true
   def init(initial) do
     state = [{:level, 0} | initial]
@@ -91,11 +82,12 @@ defmodule CheckPoint.Alarm do
 
   # this is the main loop
   # the main loop will run the check funtion that was passed
-  # in.  Then if the result was anything beside :ok or :up
-  # it should will the alert handler.
-  # Then it will use send_after to wake up later and repeat
+  # in.  If the result was :ok then the Alarm will stop. 
+  # Otherwise it will run the Alert handler to maybe send
+  # an Alert then use send_after to wake up later and repeat
   @impl true
   def handle_info(:looping, state) do
+    IO.inspect(label: :alarm)
     name = state[:name]
     check_fn = state[:fn]
     args = state[:args]
@@ -105,10 +97,9 @@ defmodule CheckPoint.Alarm do
     results =
       args
       |> then(fn args -> apply(CheckPoint.Service, check_fn, [args]) end)
-      |> CheckPoint.Alert.alert(name, level)
+      |> CheckPoint.Alert.maybe_alert(name, level)
 
     # If results is not :ok then start counting
-    # later this delay will be configurable
     case results do
       :ok ->
         {:stop, :normal, nil}

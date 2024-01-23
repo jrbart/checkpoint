@@ -31,3 +31,6 @@ check_point-*.tar
 # ignore postgres
 .pg
 logfile
+
+# ignore vim session file
+sess

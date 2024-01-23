@@ -7,7 +7,7 @@ defmodule CheckPoint.AlertTest do
   describe "&CheckPoint.Alert.alert/3" do
     test "arg passes through" do
       for res <- [:ok, :error],
-          do: assert(Alert.alert(res, 0, 0) === res)
+          do: assert(Alert.maybe_alert(res, 0, 0) === res)
     end
   end
 end
