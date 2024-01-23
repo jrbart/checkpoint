@@ -16,13 +16,11 @@ defmodule CheckPoint.Watcher do
   start a supervised worker to run fn with args and wait delay between loops
   """
   def start_watcher(name, fun, args) do
-    with {:ok, pid} <-
-           DynamicSupervisor.start_child(
-             CheckPoint.WatchSup,
-             {CheckPoint.Watcher, name: name, fn: fun, args: args}
-           ) do
-      {:ok, pid}
-    else
+    case DynamicSupervisor.start_child(
+           CheckPoint.WatchSup,
+           {CheckPoint.Watcher, name: name, fn: fun, args: args}
+         ) do
+      {:ok, pid} -> {:ok, pid}
       {:error, err} -> {:error, ErrorMessage.not_found("Check id #{name}", %{error: err})}
     end
   end
@@ -98,13 +96,8 @@ defmodule CheckPoint.Watcher do
     check_fn = state[:fn]
     args = state[:args]
 
-    # apply check_fn to args and pass to alert
-    results =
-      args
-      |> then(fn args -> apply(CheckPoint.Service, check_fn, [args]) end)
-
     # If results is not :ok then create an Alarm
-    case results do
+    case apply(CheckPoint.Service, check_fn, [args]) do
       :ok -> :ok
       _ -> CheckPoint.Alarm.create_alarm(name, check_fn, args)
     end

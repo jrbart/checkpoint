@@ -27,7 +27,6 @@ defmodule CheckPoint.Alert do
   # Future expansion will use contact type to custom tailor alert
   # but for now just trigger GraphQL Subscription
   def run(check_id) do
-    IO.inspect(label: :alert)
     CheckPoint.Checks.push_alert(check_id)
   end
 end

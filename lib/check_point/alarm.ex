@@ -87,7 +87,6 @@ defmodule CheckPoint.Alarm do
   # an Alert then use send_after to wake up later and repeat
   @impl true
   def handle_info(:looping, state) do
-    IO.inspect(label: :alarm)
     name = state[:name]
     check_fn = state[:fn]
     args = state[:args]
