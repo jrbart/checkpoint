@@ -160,7 +160,7 @@ subscription {
 }
 ```
 
-Now we need wot wait 3 minutes until the Alarm goes off and triggers the Alert...
+Now we need to wait 3 minutes until the Alarm goes off and triggers the Alert...
 
 and that is how to use the GraphQL API to set up Watchers and get Alerts.
 
