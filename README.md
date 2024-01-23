@@ -133,7 +133,7 @@ either subscribe to the check itself:
 
 ```
 subscription {
-  checkAlert(id: 1) {
+  checkAlert(id: 2) {
     id
     isAlive
     args
@@ -167,11 +167,11 @@ and that is how to use the GraphQL API to set up Watchers and get Alerts.
 Finally, a more useful alert is to monitor an HTTP URL and give an alert if it fails:
 
 ```
-    mutation {
+mutation {
   createCheck(
     service: "http", 
     args: "http://google.com", 
-    contact: "randy", 
+    contact: "bob", 
     description: "Alert me if Google goes down") 
   {
     id
