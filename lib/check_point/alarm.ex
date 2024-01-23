@@ -1,6 +1,6 @@
-defmodule CheckPoint.Watcher do
+defmodule CheckPoint.Alarm do
   use GenServer, restart: :transient
-  alias CheckPoint.WatcherReg
+  alias CheckPoint.AlarmReg
 
   @moduledoc """
   Each checkpoint is a function being run in a genserver.  If the function returns :ok
@@ -9,21 +9,21 @@ defmodule CheckPoint.Watcher do
   """
 
   # API
-
-  @convert_minutes Application.compile_env(:check_point, :convert_minutes)
+  # When checking an alarm, check 10 times faster than a Watch would
+  @convert_minutes div(Application.compile_env(:check_point, :convert_minutes), 10)
 
   @doc """
   start a supervised worker to run fn with args and wait delay between loops
   """
-  def start_watcher(name, fun, args) do
+  def create_alarm(name, fun, args) do
     with {:ok, pid} <-
            DynamicSupervisor.start_child(
-             CheckPoint.WatchSup,
-             {CheckPoint.Watcher, name: name, fn: fun, args: args}
+             CheckPoint.AlarmSup,
+             {CheckPoint.Alarm, name: name, fn: fun, args: args}
            ) do
       {:ok, pid}
     else
-      {:error, err} -> {:error, ErrorMessage.not_found("Check id #{name}", %{error: err})}
+      {:error, err} -> {:error, ErrorMessage.not_found("Alarm id #{name}", %{error: err})}
     end
   end
 
@@ -33,30 +33,30 @@ defmodule CheckPoint.Watcher do
   def status(pid) when is_pid(pid), do: Enum.at(elem(:sys.get_status(pid), 3), 1)
 
   def status(id) when is_integer(id) do
-    case Registry.lookup(WatcherReg, id) do
+    case Registry.lookup(AlarmReg, id) do
       [{pid, _} | _] -> status(pid)
       _ -> "not in Registry"
     end
   end
 
-  def status(_), do: "unkown worker id"
+  def status(_), do: "unkown alarm id"
 
   def state(pid) when is_pid(pid), do: :sys.get_state(pid)[:level]
 
   def state(id) when is_integer(id) do
-    case Registry.lookup(WatcherReg, id) do
+    case Registry.lookup(AlarmReg, id) do
       [{pid, _} | _] -> state(pid)
       _ -> "not in Registry"
     end
   end
 
-  def state(_), do: "unknow worker id"
+  def state(_), do: "unknow alarm id"
 
   @doc """
   looks up worker by id and removes it
   """
   def kill(id) do
-    with {pid, _} <- hd(Registry.lookup(WatcherReg, id)) do
+    with {pid, _} <- hd(Registry.lookup(AlarmReg, id)) do
       GenServer.stop(pid, :normal)
     end
 
@@ -64,7 +64,7 @@ defmodule CheckPoint.Watcher do
   end
 
   @doc """
-  Create a checker (GenServer) to repeat a check function.
+  Create a Alarm (GenServer)
   """
   def check(name, check_function, args) do
     # convert delay from min to ms (stays in ms for tests)
@@ -74,7 +74,7 @@ defmodule CheckPoint.Watcher do
   # Implementation
 
   def start_link(initial) do
-    name = {:via, Registry, {CheckPoint.WatcherReg, initial[:name]}}
+    name = {:via, Registry, {CheckPoint.AlarmReg, initial[:name]}}
     GenServer.start_link(__MODULE__, initial, name: name)
   end
 
@@ -82,34 +82,40 @@ defmodule CheckPoint.Watcher do
   # initializing the rest of the checks.
   @impl true
   def init(initial) do
+    state = [{:level, 0} | initial]
+
     # start the loop
     Process.send(self(), :looping, [])
-    {:ok, initial}
+    {:ok, state}
   end
 
   # this is the main loop
   # the main loop will run the check funtion that was passed
-  # in.  Then if the result was anything beside :ok it will
-  # create and Alarm. Either way it will use send_after to
-  # wake up later and repeat
+  # in.  Then if the result was anything beside :ok or :up
+  # it should will the alert handler.
+  # Then it will use send_after to wake up later and repeat
   @impl true
   def handle_info(:looping, state) do
     name = state[:name]
     check_fn = state[:fn]
     args = state[:args]
+    level = state[:level]
 
     # apply check_fn to args and pass to alert
     results =
       args
       |> then(fn args -> apply(CheckPoint.Service, check_fn, [args]) end)
+      |> CheckPoint.Alert.alert(name, level)
 
-    # If results is not :ok then create an Alarm
+    # If results is not :ok then start counting
+    # later this delay will be configurable
     case results do
-      :ok -> :ok
-      _ -> CheckPoint.Alarm.create_alarm(name, check_fn, args)
-    end
+      :ok ->
+        {:stop, :normal, nil}
 
-    Process.send_after(self(), :looping, 3 * @convert_minutes)
-    {:noreply, state}
+      _ ->
+        Process.send_after(self(), :looping, @convert_minutes)
+        {:noreply, [{:level, level + 1} | tl(state)]}
+    end
   end
 end
