@@ -48,7 +48,7 @@ In GraphQL:
 ```
 mutation {
   createContact(
-    description: "Randy B", 
+    description: "Randy Bob", 
     type: "gql", 
     detail: "bob@example.com", 
     name: "bob") {
