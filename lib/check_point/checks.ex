@@ -76,7 +76,7 @@ defmodule CheckPoint.Checks do
     service =
       params[:service]
       |> CheckPoint.Service.validate()
-      |> String.to_existing_atom()    
+      |> String.to_existing_atom()
 
     args = params[:args]
     # add to database, then if successful, start a worker

@@ -19,7 +19,8 @@ defmodule CheckPoint.Service do
        Send an HTTP (or HTTPS) GET request and check that it succeeded
   """
   def http(addr, _args \\ []) do
-  alias Tesla
+    alias Tesla
+
     case Tesla.get(addr) do
       {:ok, _resp} -> :ok
       _ -> false
@@ -35,5 +36,4 @@ defmodule CheckPoint.Service do
   Always returns false
   """
   def red(_), do: false
-
 end
