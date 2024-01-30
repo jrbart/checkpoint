@@ -4,12 +4,6 @@ defmodule CheckPoint.StartUp do
   alias CheckPoint.Watcher
   @moduledoc false
 
-  # Using a GenServer to pull check from database and fire
-  # them up.  Maybe could use a Task here instead but
-  # Jose on Elixir Forum says it is recommended to use a
-  # Genserver.
-
-  # Needed for GenServer implementation
   def start_link(_arg), do: Task.start_link(__MODULE__, :run, [])
 
   def run do
