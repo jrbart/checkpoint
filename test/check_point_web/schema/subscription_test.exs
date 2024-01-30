@@ -16,7 +16,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
       {:ok, check} =
         Checks.create_check(%{
           description: "test",
-          service: "red",
+          probe: "red",
           args: "test",
           contact: contact
         })
@@ -52,7 +52,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
       {:ok, check} =
         Checks.create_check(%{
           description: "test",
-          service: "red",
+          probe: "red",
           args: "test",
           contact: contact
         })

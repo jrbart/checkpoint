@@ -72,16 +72,16 @@ defmodule CheckPoint.Checks do
   end
 
   def create_check(params) do
-    # convert service from string to function (atom)
-    service =
-      params[:service]
-      |> CheckPoint.Service.validate()
+    # convert probe from string to function (atom)
+    probe =
+      params[:probe]
+      |> CheckPoint.Probe.validate()
       |> String.to_existing_atom()
 
     args = params[:args]
     # add to database, then if successful, start a worker
     with {:ok, check} <- Actions.create(Check, params),
-         {:ok, _pid} <- Watcher.start_watcher(check.id, service, args) do
+         {:ok, _pid} <- Watcher.start_watcher(check.id, probe, args) do
       stat = Watcher.status(check.id)
       state = Watcher.state(check.id)
       # Add info fields from workers to the result

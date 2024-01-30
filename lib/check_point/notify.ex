@@ -4,12 +4,15 @@ defmodule CheckPoint.Notify do
 
   def maybe_notify(res, name, level)
 
-  # If the service test passed, return :ok
+  # If the Probe test passed, return :ok
   def maybe_notify(:ok, _, _), do: :ok
 
   # if level has reached 3 tries, then create a task to notify
   def maybe_notify(res, check_id, 3) do
-    Task.Supervisor.start_child(CheckPoint.TaskSup, fn -> CheckPoint.Checks.push_notify(check_id) end)
+    Task.Supervisor.start_child(
+      CheckPoint.TaskSup,
+      fn -> CheckPoint.Checks.push_notify(check_id) end
+    )
 
     res
   end

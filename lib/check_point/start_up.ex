@@ -8,12 +8,12 @@ defmodule CheckPoint.StartUp do
 
   def run do
     for ch <- Checks.list_checks() do
-      service =
-        ch.service
-        |> CheckPoint.Service.validate()
+      probe =
+        ch.probe
+        |> CheckPoint.Probe.validate()
         |> String.to_existing_atom()
 
-      Watcher.start_watcher(ch.id, service, ch.args)
+      Watcher.start_watcher(ch.id, probe, ch.args)
     end
 
     {:ok, :normal}

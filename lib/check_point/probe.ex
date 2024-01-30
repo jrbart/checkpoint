@@ -1,15 +1,15 @@
-defmodule CheckPoint.Service do
+defmodule CheckPoint.Probe do
   # These are functions that get passed to a task.  The task will 
   # run the function with a set of arguements and set an Alarm if 
   # the results is not :ok
   @moduledoc false
 
   @doc """
-  Check that service type is valid
+  Check that probe type is valid
   """
-  def validate(service) do
-    if service in ["http", "green", "red"] do
-      service
+  def validate(probe) do
+    if probe in ["http", "green", "red"] do
+      probe
     else
       "red"
     end
@@ -19,12 +19,11 @@ defmodule CheckPoint.Service do
        Send an HTTP (or HTTPS) GET request and check that it succeeded
   """
   def http(addr, _args \\ []) do
-    alias Tesla
-
     case Tesla.get(addr) do
       {:ok, _resp} -> :ok
       _ -> false
     end
+    |> IO.inspect
   end
 
   @doc """

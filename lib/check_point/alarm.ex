@@ -73,11 +73,9 @@ defmodule CheckPoint.Alarm do
   # the initialization showld quckly return so the engine can move on 
   @impl true
   def init(initial) do
-    state = [{:level, 0} | initial]
-
-    # start the loop
+    # start the loop with level=0
     Process.send(self(), :looping, [])
-    {:ok, state}
+    {:ok, [{:level, 0} | initial]}
   end
 
   # this is the main loop
@@ -87,16 +85,13 @@ defmodule CheckPoint.Alarm do
   # an Notify then use send_after to wake up later and repeat
   @impl true
   def handle_info(:looping, state) do
-    name = state[:name]
-    check_fn = state[:fn]
-    args = state[:args]
-    level = state[:level]
-
     # apply check_fn to args and pass to Notify
     results =
-      args
-      |> then(fn args -> apply(CheckPoint.Service, check_fn, [args]) end)
-      |> CheckPoint.Notify.maybe_notify(name, level)
+      state[:args]
+      |> then(fn args ->
+        apply(CheckPoint.Probe, state[:fn], [args])
+      end)
+      |> CheckPoint.Notify.maybe_notify(state[:name], state[:level])
 
     # If results is not :ok then start counting
     case results do
@@ -105,7 +100,8 @@ defmodule CheckPoint.Alarm do
 
       _ ->
         Process.send_after(self(), :looping, @convert_minutes)
-        {:noreply, [{:level, level + 1} | tl(state)]}
+        # Each time the level increases so we can notify after a numnber of failures
+        {:noreply, [{:level, state[:level] + 1} | tl(state)]}
     end
   end
 end

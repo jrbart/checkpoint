@@ -14,7 +14,7 @@ defmodule CheckPoint.ChecksTest do
 
   @check %{
     description: "test",
-    service: "green",
+    probe: "green",
     args: "test",
     opts: "delay: 1"
   }

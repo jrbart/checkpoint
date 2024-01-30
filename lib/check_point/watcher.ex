@@ -92,14 +92,10 @@ defmodule CheckPoint.Watcher do
   # wake up later and repeat
   @impl true
   def handle_info(:looping, state) do
-    name = state[:name]
-    check_fn = state[:fn]
-    args = state[:args]
-
-    # If results is not :ok then create an Alarm
-    case apply(CheckPoint.Service, check_fn, [args]) do
+    # If probe is not :ok then create an Alarm
+    case apply(CheckPoint.Probe, state[:fn], [state[:args]]) do
       :ok -> :ok
-      _ -> CheckPoint.Alarm.create_alarm(name, check_fn, args)
+      _ -> CheckPoint.Alarm.create_alarm(state[:name], state[:fn], state[:args])
     end
 
     Process.send_after(self(), :looping, 3 * @convert_minutes)

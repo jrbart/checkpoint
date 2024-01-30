@@ -18,7 +18,7 @@ defmodule CheckPointWeb.Schema.CheckQueryTest do
       {:ok, check} =
         Checks.create_check(%{
           description: "test",
-          service: "green",
+          probe: "green",
           args: "test",
           contact: contact
         })
