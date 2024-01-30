@@ -96,6 +96,7 @@ defmodule CheckPoint.Alarm do
     # If results is not :ok then start counting
     case results do
       :ok ->
+        # if the probe comes back up we can stop the alarm
         {:stop, :normal, nil}
 
       _ ->
