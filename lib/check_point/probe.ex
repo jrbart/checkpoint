@@ -23,7 +23,6 @@ defmodule CheckPoint.Probe do
       {:ok, _resp} -> :ok
       _ -> false
     end
-    |> IO.inspect
   end
 
   @doc """
