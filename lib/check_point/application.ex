@@ -8,7 +8,8 @@ defmodule CheckPoint.Application do
   @impl true
   def start(_type, _args) do
     children =
-      Application.get_env(:check_point, :environment, :prod)
+      :check_point
+      |> Application.get_env(:environment, :prod)
       |> children()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -33,6 +34,9 @@ defmodule CheckPoint.Application do
       {Registry, keys: :unique, name: CheckPoint.WatcherReg},
       # Start a Dynamic Supervisor for Alarm
       {DynamicSupervisor, strategy: :one_for_one, name: CheckPoint.AlarmSup},
+      # Start a Supervisor for fire-and-forget Tasks
+      # (StartUp Task and Notify Tasks)
+      {Task.Supervisor, name: CheckPoint.TaskSup},
       {Registry, keys: :unique, name: CheckPoint.AlarmReg},
       CheckPoint.Repo
     ]
@@ -46,7 +50,6 @@ defmodule CheckPoint.Application do
     children(:common) ++
       [
         # Load existing checks from database on startup
-        {Task.Supervisor, name: CheckPoint.StartUpSup},
         {CheckPoint.StartUp, name: CheckPoint.StartUp}
       ]
   end

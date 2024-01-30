@@ -5,7 +5,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
   alias CheckPoint.Checks
 
   describe "subscription" do
-    test "triggers check_alert when alert occurs", %{socket: socket} do
+    test "triggers check_notify when notify occurs", %{socket: socket} do
       contact = %{
         name: "new_name",
         description: "Randy Bartels",
@@ -21,13 +21,13 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
           contact: contact
         })
 
-      sub = "subscription { checkAlert( id: \"#{check.id}\" ) { id }}"
+      sub = "subscription { checkNotify( id: \"#{check.id}\" ) { id }}"
       ref = push_doc(socket, sub)
 
       # Because timing is fast, might have to skip this assert
       assert_reply(ref, :ok, %{subscriptionId: sub_id}, 1000)
 
-      # Now check should do its job and publish an alert...
+      # Now check should do its job and publish an notify...
       assert_push("subscription:data", data)
 
       # using '=' here to pattern match and validate format
@@ -38,10 +38,10 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
                }
              } = data
 
-      assert %{"checkAlert" => %{"id" => to_string(check.id)}} === result_data
+      assert %{"checkNotify" => %{"id" => to_string(check.id)}} === result_data
     end
 
-    test "triggers contact_alert when alert occurs", %{socket: socket} do
+    test "triggers contact_notify when notify occurs", %{socket: socket} do
       contact = %{
         name: "new_name",
         description: "Randy Bartels",
@@ -57,7 +57,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
           contact: contact
         })
 
-      sub = "subscription { contactAlert( id: \"#{check.contact.id}\" ) { id }}"
+      sub = "subscription { contactNotify( id: \"#{check.contact.id}\" ) { id }}"
       ref = push_doc(socket, sub)
       assert_reply(ref, :ok, %{subscriptionId: sub_id}, 1000)
       assert_push("subscription:data", data)
@@ -70,7 +70,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
                }
              } = data
 
-      assert %{"contactAlert" => %{"id" => to_string(check.id)}} === result_data
+      assert %{"contactNotify" => %{"id" => to_string(check.id)}} === result_data
     end
   end
 end

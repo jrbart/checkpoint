@@ -1,13 +1,13 @@
-defmodule CheckPoint.AlertTest do
+defmodule CheckPoint.NotifyTest do
   @moduledoc false
   use ExUnit.Case
-  doctest CheckPoint.Alert
-  alias CheckPoint.Alert
+  doctest CheckPoint.Notify
+  alias CheckPoint.Notify
 
-  describe "&CheckPoint.Alert.alert/3" do
+  describe "&CheckPoint.Notify.notify/3" do
     test "arg passes through" do
       for res <- [:ok, :error],
-          do: assert(Alert.maybe_alert(res, 0, 0) === res)
+          do: assert(Notify.maybe_notify(res, 0, 0) === res)
     end
   end
 end

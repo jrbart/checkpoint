@@ -4,7 +4,7 @@ defmodule CheckPoint.Alarm do
 
   @moduledoc """
   Each Alarm runs a checkpoint function in a genserver.  If the function returns :ok
-  then it will stop the Alarm.  If it returns :error it will call the Alert moddule 
+  then it will stop the Alarm.  If it returns :error it will call the Notify moddule 
   which will handle the escalation.
   """
 
@@ -83,8 +83,8 @@ defmodule CheckPoint.Alarm do
   # this is the main loop
   # the main loop will run the check funtion that was passed
   # in.  If the result was :ok then the Alarm will stop. 
-  # Otherwise it will run the Alert handler to maybe send
-  # an Alert then use send_after to wake up later and repeat
+  # Otherwise it will run the Notify handler to maybe send
+  # an Notify then use send_after to wake up later and repeat
   @impl true
   def handle_info(:looping, state) do
     name = state[:name]
@@ -92,11 +92,11 @@ defmodule CheckPoint.Alarm do
     args = state[:args]
     level = state[:level]
 
-    # apply check_fn to args and pass to alert
+    # apply check_fn to args and pass to Notify
     results =
       args
       |> then(fn args -> apply(CheckPoint.Service, check_fn, [args]) end)
-      |> CheckPoint.Alert.maybe_alert(name, level)
+      |> CheckPoint.Notify.maybe_notify(name, level)
 
     # If results is not :ok then start counting
     case results do

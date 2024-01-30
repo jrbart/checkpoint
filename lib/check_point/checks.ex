@@ -104,9 +104,9 @@ defmodule CheckPoint.Checks do
     end
   end
 
-  def push_alert(id) do
+  def push_notify(id) do
     {:ok, check} = CheckPoint.Checks.find_check(id: id, preload: [:contact])
-    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, check_alert: check.id)
-    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, contact_alert: check.contact.id)
+    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, check_notify: check.id)
+    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, contact_notify: check.contact.id)
   end
 end
