@@ -4,13 +4,18 @@ defmodule CheckPointWeb.Resolvers.Check do
   alias CheckPoint.Checks
 
   def find(%{id: id}, _) do
-    Checks.find_check(%{id: id, preload: :contact})
+    case Checks.find_check(%{id: id, preload: :contact}) do
+      {:error, _} ->
+        {:error, "check not found"}
+
+      res -> res
+    end
   end
 
   def create(params, _) do
     case Checks.find_contact(%{name: params.contact}) do
       {:error, _} ->
-        {:error, "cannot find contact"}
+        {:error, "check not found"}
 
       {:ok, cid} ->
         params

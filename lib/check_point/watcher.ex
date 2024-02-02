@@ -26,31 +26,6 @@ defmodule CheckPoint.Watcher do
   end
 
   @doc """
-  return running status of genserver
-  """
-  def status(pid) when is_pid(pid), do: Enum.at(elem(:sys.get_status(pid), 3), 1)
-
-  def status(id) when is_integer(id) do
-    case Registry.lookup(WatcherReg, id) do
-      [{pid, _} | _] -> status(pid)
-      _ -> "not in Registry"
-    end
-  end
-
-  def status(_), do: "unkown worker id"
-
-  def state(pid) when is_pid(pid), do: :sys.get_state(pid)[:level]
-
-  def state(id) when is_integer(id) do
-    case Registry.lookup(WatcherReg, id) do
-      [{pid, _} | _] -> state(pid)
-      _ -> "not in Registry"
-    end
-  end
-
-  def state(_), do: "unknow worker id"
-
-  @doc """
   looks up worker by id and removes it
   """
   def kill(id) do
