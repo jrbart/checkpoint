@@ -11,7 +11,7 @@ defmodule CheckPoint.Notify do
   def maybe_notify(res, check_id, 3) do
     Task.Supervisor.start_child(
       CheckPoint.TaskSup,
-      fn -> CheckPoint.Checks.push_notify(check_id) end
+      fn -> push_notify(check_id) end
     )
 
     res
@@ -20,6 +20,12 @@ defmodule CheckPoint.Notify do
   # If level is greater than 3 then just return
   # Pass through the result code
   def maybe_notify(res, _, _), do: res
+
+  def push_notify(id) do
+    {:ok, check} = CheckPoint.Checks.find_check(id: id, preload: [:contact])
+    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, check_notify: check.id)
+    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, contact_notify: check.contact.id)
+  end
 
   # Task implementation
 
@@ -30,6 +36,6 @@ defmodule CheckPoint.Notify do
   # Future expansion will use contact type to custom tailor notify
   # but for now just trigger GraphQL Subscription
   def run(check_id) do
-    CheckPoint.Checks.push_notify(check_id)
+    push_notify(check_id)
   end
 end

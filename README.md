@@ -7,32 +7,32 @@ trigger an alert if the checks fails 3 times in a row.
 
 The check_point database consists of these tables:
 
-checks - each row contains the check service to be monitored, the target (URL) 
+checks - each row contains a service probe to be monitored, the target (URL) 
 that is running that service, and a link to the contact that should be alerted
-if the service fails.  Currently the only service that can be monitored is
+if the probe fails.  Currently the only probe that can be monitored is
 HTTP(S), and will succeed or fail based on the URL responding without error when 
-sent a GET request.  Other services, GREEN and RED, are present for testing and 
-will always succeed or fail.  Future services could include ICMP ping, port
+sent a GET request.  Other probes, GREEN and RED, are present for testing and 
+will always succeed or fail.  Future probes could include ICMP ping, port
 checking, and even searching an HTTP response for a given regex.
 
 contacts - each row gives a short name to the contact, a field for a description
 (or person's name), and the details to be used to send an alert (currently not used).
 
-The monitoring service consists of Watchers, Alarms, and Alerts.
+The monitoring service consists of Watchers, Alarms, and Notify.
 
 A Watcher is a dedicated process that will run a given check and possibly
-set an alarm if the check fails.  The Watcher will then sleep for a specified
+set an alarm if the probe fails.  The Watcher will then sleep for a specified
 time and repeat.
 
-An Alarm is set when a check fails the first time.  It will run the same check
+An Alarm is set when a probe fails the first time.  It will run the same probe
 but at a faster pace.  If the alarm fails three times in a row, it will send
-an Alert to the contact for the check.  If the alarm succeeds even once, it
-stops without sending an Alert.
+a Notify to the contact for the check.  If the alarm succeeds even once, it
+stops without sending an Notify.
 
-Currently the only Alert that is supported is to trigger a Graphql endpoint.  It
+Currently the only Notify that is supported is to trigger a Graphql endpoint.  It
 is only run once, but is implemented as a Task so that any processing can be 
 offloaded from the Alarm, and to make it modular to drop in multiple types
-of Alerts like using chatbots, text paging, email, etc.
+of Notify like using chatbots, text paging, email, etc.
 
 ## How to Use CheckPoint
 
@@ -41,7 +41,7 @@ After getting the code, set up the database and start the Phoenix application
 ```check_point % mix do ecto.drop, ecto.create, ecto.migrate, phx.server ```
 
 First we need to create a contact.  A check requires a contact which would receive
-an Alert if one is generated.
+a Notify if one is generated.
 
 In GraphQL:
 
@@ -81,13 +81,13 @@ mutation{updateContact(id:1, detail: "bob@email.com") {
 }}
 ```
 
-Now we can create a check.  The first service that is provided is "green"
+Now we can create a check.  The first probe that is provided is "green"
 which always returns :ok
 
 ```
 mutation {
   createCheck(
-    service: "green", 
+    probe: "green", 
     args: "n/a", 
     contact: "bob", 
     description: "global :ok") 
@@ -103,7 +103,7 @@ You can refresh the query for bob or check directly for this check:
 ```
 query{check(id: 1) {
   id
-  service
+  probe
   args
   contact {
     id
@@ -114,12 +114,12 @@ query{check(id: 1) {
 }}
 ```
 
-Checks that always pass are good, but not as fun as checks that send Alerts
+Checks that always pass are good, but not as fun as checks that send Notify
 
 ```
 mutation {
   createCheck(
-    service: "red", 
+    probe: "red", 
     args: "blech", 
     contact: "bob", 
     description: "global fail") 
@@ -128,16 +128,16 @@ mutation {
   } }
 ```
 
-And then we probably want to subscribe so we can see the Alert.  We can
+And then we probably want to subscribe so we can see the Notify.  We can
 either subscribe to the check itself:
 
 ```
 subscription {
-  checkAlert(id: 2) {
+  checkNotify(id: 2) {
     id
     isAlive
     args
-    service
+    probe
     contact {
       id
     }
@@ -147,32 +147,32 @@ subscription {
 
 ```
 
-or to the contact so we receive all Alerts that are assigned to that contact:
+or to the contact so we receive all Notify that are assigned to that contact:
 ```
 subscription {
-  contactAlert(id: 1) {
+  contactNotify(id: 1) {
     id
     isAlive
     args
-    service
+    probe
     description
   }
 }
 ```
 
-Now we need to wait 3 minutes until the Alarm goes off and triggers the Alert...
+Now we need to wait 3 minutes until the Alarm goes off and triggers the Notify...
 
-and that is how to use the GraphQL API to set up Watchers and get Alerts.
+and that is how to use the GraphQL API to set up Watchers and get Notify.
 
 Finally, a more useful alert is to monitor an HTTP URL and give an alert if it fails:
 
 ```
 mutation {
   createCheck(
-    service: "http", 
+    probe: "http", 
     args: "http://google.com", 
     contact: "bob", 
-    description: "Alert me if Google goes down") 
+    description: "Notify me if Google goes down") 
   {
     id
   }

@@ -29,11 +29,8 @@ defmodule CheckPoint.Watcher do
   looks up worker by id and removes it
   """
   def kill(id) do
-    with {pid, _} <- hd(Registry.lookup(WatcherReg, id)) do
-      GenServer.stop(pid, :normal)
-    end
-
-    :ok
+    {pid, _} = hd(Registry.lookup(WatcherReg, id))
+    GenServer.stop(pid, :normal)
   end
 
   @doc """

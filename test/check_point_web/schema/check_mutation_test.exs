@@ -4,7 +4,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
   use CheckPoint.RepoCase
 
   alias CheckPointWeb.Schema
-  alias CheckPoint.Checks
+  alias CheckPoint.{Checks, CheckWatcher}
 
   describe "&createCheck" do
     test "create a check" do
@@ -53,7 +53,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
           Schema
         )
 
-      assert res.message === "check not found"
+      assert res.message === "contact not found"
     end
 
     test "delete check" do
@@ -66,7 +66,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
         })
 
       {:ok, check} =
-        Checks.create_check(%{
+        CheckWatcher.create_start(%{
           description: "Test check",
           probe: "green",
           args: "always pass",

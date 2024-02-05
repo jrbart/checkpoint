@@ -16,26 +16,18 @@ defmodule CheckPoint.Alarm do
   start a supervised worker to run fn with args and wait between loops
   """
   def create_alarm(name, fun, args) do
-    with {:ok, pid} <-
-           DynamicSupervisor.start_child(
-             CheckPoint.AlarmSup,
-             {CheckPoint.Alarm, name: name, fn: fun, args: args}
-           ) do
-      {:ok, pid}
-    else
-      {:error, err} -> {:error, ErrorMessage.not_found("Alarm id #{name}", %{error: err})}
-    end
+    DynamicSupervisor.start_child(
+      CheckPoint.AlarmSup,
+      {CheckPoint.Alarm, name: name, fn: fun, args: args}
+    )
   end
 
   @doc """
   looks up genserver by id and removes it
   """
   def kill(id) do
-    with {pid, _} <- hd(Registry.lookup(AlarmReg, id)) do
+    {pid, _} = hd(Registry.lookup(AlarmReg, id))
       GenServer.stop(pid, :normal)
-    end
-
-    :ok
   end
 
   # Implementation

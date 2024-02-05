@@ -2,7 +2,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
   use CheckPointWeb.SubscriptionCase
   use CheckPoint.RepoCase
 
-  alias CheckPoint.Checks
+  alias CheckPoint.CheckWatcher
 
   describe "subscription" do
     test "triggers check_notify when notify occurs", %{socket: socket} do
@@ -14,7 +14,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
       }
 
       {:ok, check} =
-        Checks.create_check(%{
+        CheckWatcher.create_start(%{
           description: "test",
           probe: "red",
           args: "test",
@@ -27,7 +27,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
       # Because timing is fast, might have to skip this assert
       assert_reply(ref, :ok, %{subscriptionId: sub_id}, 1000)
 
-      # Now check should do its job and publish an notify...
+      # Now check should do its job and notify...
       assert_push("subscription:data", data)
 
       # using '=' here to pattern match and validate format
@@ -50,7 +50,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
       }
 
       {:ok, check} =
-        Checks.create_check(%{
+        CheckWatcher.create_start(%{
           description: "test",
           probe: "red",
           args: "test",
