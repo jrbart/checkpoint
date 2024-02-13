@@ -27,7 +27,7 @@ defmodule CheckPoint.Alarm do
   """
   def kill(id) do
     {pid, _} = hd(Registry.lookup(AlarmReg, id))
-      GenServer.stop(pid, :normal)
+    GenServer.stop(pid, :normal)
   end
 
   # Implementation

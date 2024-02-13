@@ -1,6 +1,5 @@
 defmodule CheckPoint.Watcher do
   use GenServer, restart: :transient
-  alias CheckPoint.WatcherReg
 
   @moduledoc """
   Each checkpoint is a function being run in a genserver.  If the function returns :ok
@@ -29,15 +28,14 @@ defmodule CheckPoint.Watcher do
   looks up worker by id and removes it
   """
   def kill(id) do
-    {pid, _} = hd(Registry.lookup(WatcherReg, id))
-    GenServer.stop(pid, :normal)
+    GenServer.stop({:via, Registry, {CheckPoint.WatcherReg, id}}, :normal)
   end
 
   @doc """
   Create a checker (GenServer) to repeat a check function.
   """
   def check(name, check_function, args) do
-    # convert delay from min to ms (stays in ms for tests)
+    # convert delay from min to ms (stays in ms for probes)
     start_link(name: name, fn: check_function, args: args)
   end
 

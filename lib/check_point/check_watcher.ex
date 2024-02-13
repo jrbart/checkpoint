@@ -21,5 +21,4 @@ defmodule CheckPoint.CheckWatcher do
     Watcher.kill(id)
     Checks.delete_check(id)
   end
-
 end

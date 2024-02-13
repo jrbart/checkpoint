@@ -8,7 +8,8 @@ defmodule CheckPointWeb.Resolvers.Check do
       {:error, _} ->
         {:error, "check not found"}
 
-      res -> res
+      res ->
+        res
     end
   end
 
