@@ -1,12 +1,9 @@
 defmodule CheckPoint.CheckWatcher do
-  alias CheckPoint.{Checks, Probe, Watcher}
+  alias CheckPoint.{Checks, Probes, Probes.Watcher}
 
   def create_start(params) do
     # convert probe from string to function (atom)
-    probe =
-      params[:probe]
-      |> Probe.validate()
-      |> String.to_existing_atom()
+    probe = Probes.to_atom(params[:probe])
 
     args = params[:args]
     # add to database and start a watcher

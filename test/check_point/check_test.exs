@@ -1,7 +1,7 @@
 defmodule CheckPoint.CheckTest do
   @moduledoc false
   use ExUnit.Case
-  alias CheckPoint.Probe
+  alias CheckPoint.Probes.Probe
 
   describe "Check.http/1" do
     test "function exists" do
