@@ -53,7 +53,7 @@ defmodule CheckPointWeb.Schema.CheckMutationTest do
           Schema
         )
 
-      assert res.message === "contact not found"
+      assert res.message === "Contact name not valid"
     end
 
     test "delete check" do

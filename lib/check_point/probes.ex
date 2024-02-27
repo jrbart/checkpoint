@@ -9,6 +9,7 @@ defmodule CheckPoint.Probes do
     |> validate()
     |> String.to_existing_atom()
   end
+
   @doc """
   Check that probe type is valid
   """

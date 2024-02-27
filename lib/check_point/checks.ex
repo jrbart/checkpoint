@@ -8,7 +8,7 @@ defmodule CheckPoint.Checks do
   end
 
   def find_contact(params) do
-    Actions.find(Contact, Map.put_new(params, :preload, [:checks]))
+    Actions.find(Contact, params)
   end
 
   def update_contact(id, params) do
