@@ -38,22 +38,20 @@ defmodule CheckPointWeb.Schema.ContactMutationTest do
         })
 
       mutation = """
-        id: #{contact.id}
-        name: "change_name", 
+        name: "#{contact.name}"
         detail: "bob@codingp.com" 
       """
 
-      mutation = "mutation { updateContact( #{mutation} ) { id } }"
+      mutation = "mutation { updateContact( #{mutation} ) { name } }"
 
-      {:ok, %{data: %{"updateContact" => %{"id" => cid}}}} =
+      {:ok, %{data: %{"updateContact" => %{"name" => name}}}} =
         Absinthe.run(
           mutation,
           Schema
         )
 
-      cid = String.to_integer(cid)
-      {:ok, my_contact} = Checks.find_contact(%{id: cid})
-      assert "change_name" === my_contact.name
+      {:ok, my_contact} = Checks.find_contact(%{name: name})
+      assert "bob@codingp.com" === my_contact.detail
     end
 
     test "delete contact" do

@@ -11,8 +11,8 @@ defmodule CheckPoint.Checks do
     Actions.find(Contact, params)
   end
 
-  def update_contact(id, params) do
-    Actions.update(Contact, id, params)
+  def update_contact(name, params) do
+    Actions.find_and_update(Contact, %{name: name}, params)
   end
 
   def create_contact(params) do

@@ -13,7 +13,7 @@ defmodule CheckPoint.Probes.Notify do
   defp push_notify(id) do
     {:ok, check} = CheckPoint.Checks.find_check(id: id, preload: [:contact])
     Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, check_notify: check.id)
-    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, contact_notify: check.contact.id)
+    Absinthe.Subscription.publish(CheckPointWeb.Endpoint, check, contact_notify: check.contact.name)
   end
 
   # Task implementation

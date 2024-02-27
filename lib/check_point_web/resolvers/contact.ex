@@ -18,11 +18,23 @@ defmodule CheckPointWeb.Resolvers.Contact do
   end
 
   def create(params, _) do
-    Checks.create_contact(params)
+    case Checks.create_contact(params) do
+      {:ok, _} = res ->
+        res
+
+      _ -> 
+        {:error, "Contact name already exists"}
+    end
   end
 
   def update(params, _) do
-    Checks.update_contact(params[:id], params)
+    case Checks.update_contact(params[:name], params) do
+      {:ok, _} = res ->
+        res
+
+      _ -> 
+        {:error, "Contact not found"}
+    end
   end
 
   def delete(%{name: name}, _) do

@@ -6,10 +6,10 @@ defmodule CheckPointWeb.Schema.ContactSubscription do
   object :contact_subscriptions do
     @desc "notify when down"
     field :contact_notify, :check do
-      arg :id, non_null(:id)
+      arg :name, non_null(:string)
 
       config fn args, _info ->
-        {:ok, topic: args.id}
+        {:ok, topic: args.name}
       end
     end
   end

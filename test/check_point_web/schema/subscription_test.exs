@@ -57,7 +57,7 @@ defmodule CheckPointWeb.Schema.SubscriptionTest do
           contact: contact
         })
 
-      sub = "subscription { contactNotify( id: \"#{check.contact.id}\" ) { id }}"
+      sub = "subscription { contactNotify( name: \"#{check.contact.name}\" ) { id }}"
       ref = push_doc(socket, sub)
       assert_reply(ref, :ok, %{subscriptionId: sub_id}, 1000)
       assert_push("subscription:data", data)
